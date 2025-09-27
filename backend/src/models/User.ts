@@ -69,6 +69,13 @@ UserSchema.statics.findActive = function () {
 
 UserSchema.plugin(toJSONPlugin);
 
+UserSchema.set("toJSON", {
+  virtuals: true,
+  transform: (_doc, ret: any) => {
+    delete ret.password;
+  },
+});
+
 UserSchema.set("toJSON", { virtuals: true });
 UserSchema.set("toObject", { virtuals: true });
 
