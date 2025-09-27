@@ -14,10 +14,12 @@ interface IUser extends Document {
   email: string;
   password: string;
   role: UserRole;
-  isActive: boolean;
+  avatar?: string;
   resumes?: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
+  deletedAt?: Date;
+  deletedBy?: Types.ObjectId;
 }
 
 const UserSchema = new Schema<IUser>(
@@ -35,10 +37,12 @@ const UserSchema = new Schema<IUser>(
       enum: Object.values(UserRoles),
       default: UserRoles.USER,
     },
+    avatar: { type: String, trim: true },
     password: { type: String, required: true, trim: true, select: false },
-    isActive: { type: Boolean, default: true },
+    deletedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    deletedAt: { type: Date },
   },
-  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { timestamps: true }
 );
 
 // hash the password before saving it
@@ -55,7 +59,18 @@ UserSchema.virtual("resumes", {
   foreignField: "user",
 });
 
+UserSchema.virtual("isActive").get(function () {
+  return !this.deletedAt;
+});
+
+UserSchema.statics.findActive = function () {
+  return this.find({ deletedAt: null });
+};
+
 UserSchema.plugin(toJSONPlugin);
+
+UserSchema.set("toJSON", { virtuals: true });
+UserSchema.set("toObject", { virtuals: true });
 
 const User = model<IUser>("User", UserSchema);
 
