@@ -1,5 +1,6 @@
 import { Document, model, Schema, Types } from "mongoose";
 import { doHash } from "../utils/hashing.js";
+import { toJSONPlugin } from "../plugins/toJSON.js";
 
 export const UserRoles = {
   ADMIN: "admin",
@@ -53,6 +54,8 @@ UserSchema.virtual("resumes", {
   localField: "_id",
   foreignField: "user",
 });
+
+UserSchema.plugin(toJSONPlugin);
 
 const User = model<IUser>("User", UserSchema);
 

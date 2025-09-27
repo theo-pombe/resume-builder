@@ -1,4 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
+import { toJSONPlugin } from "../plugins/toJSON.js";
 
 interface IDeclaration {
   statement?: string;
@@ -35,6 +36,8 @@ const ResumeSchema = new Schema<IResume>(
   },
   { timestamps: true }
 );
+
+ResumeSchema.plugin(toJSONPlugin);
 
 const Resume = model<IResume>("Resume", ResumeSchema);
 
