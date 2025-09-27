@@ -1,0 +1,34 @@
+{
+  "name": "resume-builder-rest-api",
+  "version": "1.0.0",
+  "description": "A RESTful API for building and managing professional resumes.",
+  "main": "dist/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npx tsx --env-file=.env --watch  src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theo-pombe/resume-builder.git"
+  },
+  "keywords": [
+    "resume-builder",
+    "resume-builder-api",
+    "resume-builder-rest-api"
+  ],
+  "author": "theomaro",
+  "bugs": {
+    "url": "https://github.com/theo-pombe/resume-builder/issues"
+  },
+  "homepage": "https://github.com/theo-pombe/resume-builder#readme",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}
