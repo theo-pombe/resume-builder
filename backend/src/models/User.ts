@@ -9,7 +9,7 @@ export const UserRoles = {
 
 export type UserRole = (typeof UserRoles)[keyof typeof UserRoles];
 
-interface IUser extends Document {
+export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
