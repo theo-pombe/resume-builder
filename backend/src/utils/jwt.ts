@@ -15,6 +15,13 @@ export type JWTExpiration =
   | "7d"
   | "30d";
 
+export interface JwtPayload {
+  id: string;
+  email: string;
+  username: string;
+  role: string;
+}
+
 const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRATION = process.env.JWT_EXPIRATION! as JWTExpiration;
 
@@ -29,4 +36,8 @@ export const generateToken = (user: IUser): string => {
   };
 
   return jwt.sign(payload, JWT_SECRET, options);
+};
+
+export const verifyToken = (token: string) => {
+  return jwt.verify(token, JWT_SECRET) as JwtPayload;
 };
