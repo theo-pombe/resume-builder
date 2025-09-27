@@ -12,7 +12,6 @@ interface IResume extends Document {
   title: string;
   summary: string;
   declaration: IDeclaration;
-  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -25,19 +24,31 @@ const ResumeSchema = new Schema<IResume>(
     title: { type: String, required: true, trim: true },
     summary: { type: String, required: true, trim: true, default: "" },
     declaration: {
-      statement: { type: String, trim: true, default: "" },
-      signature: { type: String, trim: true, default: "" },
-      date: { type: Date },
+      type: {
+        statement: { type: String, trim: true, default: "" },
+        signature: { type: String, trim: true, default: "" },
+        date: { type: Date },
+      },
       default: {},
     },
-    isActive: { type: Boolean, default: true },
     deletedBy: { type: Schema.Types.ObjectId, ref: "User" },
     deletedAt: { type: Date },
   },
   { timestamps: true }
 );
 
+ResumeSchema.virtual("isActive").get(function () {
+  return !this.deletedAt;
+});
+
+ResumeSchema.statics.findActive = function () {
+  return this.find({ deletedAt: null });
+};
+
 ResumeSchema.plugin(toJSONPlugin);
+
+ResumeSchema.set("toJSON", { virtuals: true });
+ResumeSchema.set("toObject", { virtuals: true });
 
 const Resume = model<IResume>("Resume", ResumeSchema);
 
