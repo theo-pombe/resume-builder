@@ -11,6 +11,7 @@ interface IResume extends Document {
   user: Types.ObjectId;
   title: string;
   summary: string;
+  avatar?: string;
   declaration: IDeclaration;
   createdAt: Date;
   updatedAt: Date;
@@ -23,6 +24,7 @@ const ResumeSchema = new Schema<IResume>(
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     title: { type: String, required: true, trim: true },
     summary: { type: String, required: true, trim: true, default: "" },
+    avatar: { type: String, trim: true },
     declaration: {
       type: {
         statement: { type: String, trim: true, default: "" },
@@ -36,6 +38,14 @@ const ResumeSchema = new Schema<IResume>(
   },
   { timestamps: true }
 );
+
+ResumeSchema.virtual("displayAvatar").get(function () {
+  // `this` refers to the Resume document
+  // `this.user` must be populated to access user.avatar
+  if (!this.user) return this.avatar || null;
+
+  return this.avatar || (this.user as any).avatar || null;
+});
 
 ResumeSchema.virtual("isActive").get(function () {
   return !this.deletedAt;
