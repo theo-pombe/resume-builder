@@ -1,4 +1,5 @@
 import { Document, model, Schema } from "mongoose";
+import { doHash } from "../utils/hashing.js";
 
 export const UserRoles = {
   ADMIN: "admin",
@@ -37,6 +38,14 @@ const UserSchema = new Schema<IUser>(
   },
   { timestamps: true }
 );
+
+// hash the password before saving it
+UserSchema.pre<IUser>("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.password = await doHash(this.password, 10);
+  next();
+});
 
 const User = model<IUser>("User", UserSchema);
 

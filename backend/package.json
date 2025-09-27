@@ -23,6 +23,7 @@
   "homepage": "https://github.com/theo-pombe/resume-builder#readme",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "express": "^5.1.0",
     "mongoose": "^8.18.2"
   },
