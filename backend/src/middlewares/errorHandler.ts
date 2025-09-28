@@ -1,4 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
+import { ApiError } from "../utils/apiError.js";
 
 const errorHandler = (
   error: any,
@@ -6,17 +7,25 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = error.statusCode || 500;
-  const message = error.message || "Internal Server Error";
+  let statusCode = 500;
+  let message = "Internal Server Error";
+  let details: unknown;
 
-  const resBody: Record<string, any> = {
+  if (error instanceof ApiError) {
+    statusCode = error.statusCode;
+    message = error.message;
+  }
+
+  const stack =
+    process.env.NODE_ENV === "development" ? (error as Error).stack : undefined;
+
+  const resBody: Record<string, unknown> = {
     success: false,
     message,
   };
 
-  if (process.env.NODE_ENV === "development") {
-    resBody.stack = error.stack;
-  }
+  if (details) resBody.details = details;
+  if (stack) resBody.stack = stack;
 
   res.status(statusCode).json(resBody);
 };
