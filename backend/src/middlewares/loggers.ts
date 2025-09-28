@@ -14,9 +14,7 @@ export const requestLogger = (
   res.on("finish", () => {
     const duration = Date.now() - start;
     logger.info(
-      `[Request] ${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms - Body: ${JSON.stringify(
-        req.body
-      )}`
+      `[Request] ${req.method} ${req.originalUrl} ${res.statusCode} - ${duration}ms`
     );
   });
 
