@@ -2,6 +2,11 @@ import { type Request, type Response } from "express";
 import User from "../models/User.js";
 import { compareHash } from "../utils/hashing.js";
 import { generateToken } from "../utils/jwt.js";
+import {
+  ConflictError,
+  NotFoundError,
+  UnauthorizedError,
+} from "../utils/apiError.js";
 
 interface RegisterBody {
   username: string;
@@ -21,11 +26,10 @@ class AuthController {
     const existingUser = await User.findOne({
       $or: [{ username }, { email }],
     });
-    if (existingUser) throw new Error("Username or email already exists");
+    if (existingUser)
+      throw new ConflictError("Username or email already exists");
 
     const newUser = new User({ username, email, password });
-    if (!newUser) throw new Error("User not created");
-
     await newUser.save();
 
     res.status(201).json({
@@ -41,10 +45,10 @@ class AuthController {
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
       deletedAt: null,
     }).select("+password");
-    if (!user) throw new Error("User doesn't exists");
+    if (!user) throw new NotFoundError("User not found");
 
     const isMatch = await compareHash(password, user.password);
-    if (!isMatch) throw new Error("Wrong credentials");
+    if (!isMatch) throw new UnauthorizedError("Wrong credentials");
 
     const token = generateToken(user);
 
