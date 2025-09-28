@@ -1,19 +1,35 @@
 import app from "./app.js";
 import connectDB from "./database/index.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import { errorLogger, requestLogger } from "./middlewares/loggers.js";
 import authRouter from "./routes/authRouter.js";
+import { logger } from "./utils/logger.js";
 
-// Establish database connection
-connectDB();
+async function startServer() {
+  try {
+    // Establish database connection
+    await connectDB();
+    logger.info("✅ Database connection established");
 
-//
-app.use("/api/v0/auth", authRouter);
+    // Global middlewares
+    app.use(requestLogger);
 
-//
-app.use(errorHandler);
+    // Routes
+    app.use("/api/v0/auth", authRouter);
 
-// Start the Express server
-const port = process.env.PORT;
-app.listen(port, () => {
-  console.log(`The server is running at http://localhost:${port}`);
-});
+    // Error handling
+    app.use(errorLogger);
+    app.use(errorHandler);
+
+    // Start the Express server
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      logger.info(`🚀 Server is running at http://localhost:${port}`);
+    });
+  } catch (error) {
+    logger.error("❌ Failed to start server", error);
+    process.exit(1); // Exit if DB connection fails
+  }
+}
+
+startServer();
