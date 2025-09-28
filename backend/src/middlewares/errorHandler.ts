@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { ApiError, ValidationError } from "../utils/apiError.js";
 
 const errorHandler = (
-  error: any,
+  error: unknown,
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,10 +18,14 @@ const errorHandler = (
     if (error instanceof ValidationError) {
       details = error.details;
     }
+  } else if (error instanceof Error) {
+    message = error.message || message;
   }
 
   const stack =
-    process.env.NODE_ENV === "development" ? (error as Error).stack : undefined;
+    process.env.NODE_ENV === "development" && error instanceof Error
+      ? error.stack
+      : undefined;
 
   const resBody: Record<string, unknown> = {
     success: false,
