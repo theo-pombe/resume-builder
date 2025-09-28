@@ -46,3 +46,15 @@ export class ConflictError extends ApiError {
     this.name = "ConflictError";
   }
 }
+
+export class ValidationError extends ApiError {
+  details: string[] | Record<string, any>[];
+  constructor(
+    message = "Validation Error",
+    details: string[] | Record<string, any>[] = []
+  ) {
+    super(message, 422);
+    this.details = details;
+    this.name = "ValidationError";
+  }
+}

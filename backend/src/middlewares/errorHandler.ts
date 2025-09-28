@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { ApiError } from "../utils/apiError.js";
+import { ApiError, ValidationError } from "../utils/apiError.js";
 
 const errorHandler = (
   error: any,
@@ -14,6 +14,10 @@ const errorHandler = (
   if (error instanceof ApiError) {
     statusCode = error.statusCode;
     message = error.message;
+
+    if (error instanceof ValidationError) {
+      details = error.details;
+    }
   }
 
   const stack =
