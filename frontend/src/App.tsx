@@ -5,6 +5,8 @@ import AdminRoutes from "./routes/AdminRoutes";
 import UserRoutes from "./routes/UserRoutes";
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
+import Unauthorized from "./pages/Unauthorized";
+import GuestGuard from "./contexts/GuestGuard";
 
 function App() {
   return (
@@ -12,10 +14,24 @@ function App() {
       {UserRoutes()}
       {AdminRoutes()}
 
-      <Route path="auth">
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-      </Route>
+      <Route
+        path="/auth/login"
+        element={
+          <GuestGuard>
+            <Login />
+          </GuestGuard>
+        }
+      />
+      <Route
+        path="/auth/register"
+        element={
+          <GuestGuard>
+            <Register />
+          </GuestGuard>
+        }
+      />
+
+      <Route path="/unauthorized" element={<Unauthorized />} />
     </Routes>
   );
 }
