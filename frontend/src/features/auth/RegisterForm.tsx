@@ -5,8 +5,12 @@ import type { AlertType } from "app-ui";
 import Alert from "../../components/ui/Alert";
 import Label from "../../components/form/Label";
 import TextInput from "../../components/form/TextInput";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 const RegisterForm = () => {
+  const { loading, register } = useAuth();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [alert, setAlert] = useState<AlertType>();
   const [formData, setFormData] = useState<RegisterType>({
@@ -15,7 +19,6 @@ const RegisterForm = () => {
     password: "",
     confirmPassword: "",
   });
-  const [loading, setLoading] = useState(false);
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,12 +28,18 @@ const RegisterForm = () => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-    } catch (error) {
-      if (error instanceof Error)
-        setAlert({ success: false, messages: [error.message] });
-    } finally {
-      setLoading(false);
+      const { message } = await register(formData);
+
+      setAlert({
+        success: true,
+        messages: [message || "Registration successful"],
+      });
+      navigate("/auth/login");
+    } catch (error: any) {
+      setAlert({
+        success: false,
+        messages: [error.message || "Something went wrong"],
+      });
     }
   };
 

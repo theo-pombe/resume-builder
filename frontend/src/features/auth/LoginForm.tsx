@@ -5,15 +5,22 @@ import type { AlertType } from "app-ui";
 import Alert from "../../components/ui/Alert";
 import TextInput from "../../components/form/TextInput";
 import Label from "../../components/form/Label";
+import { useAuth } from "../../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router";
 
 const LoginForm = () => {
   const { t } = useTranslation();
+  const { loading, login } = useAuth();
   const [alert, setAlert] = useState<AlertType>();
   const [formData, setFormData] = useState<LoginType>({
     usernameOrEmail: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // If coming from ProtectedRoute
+  const from = location.state?.from?.pathname || "/";
 
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,12 +30,20 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-    } catch (error) {
-      if (error instanceof Error)
-        setAlert({ success: false, messages: [error.message] });
-    } finally {
-      setLoading(false);
+      const { user } = await login(formData);
+
+      if (user.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else if (user.role === "user") {
+        navigate("/resume", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
+    } catch (error: any) {
+      setAlert({
+        success: false,
+        messages: [error.message || "Something went wrong"],
+      });
     }
   };
 
