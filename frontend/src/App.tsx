@@ -1,10 +1,14 @@
+import { Routes } from "react-router";
 import "./App.css";
+import AdminRoutes from "./routes/AdminRoutes";
+import UserRoutes from "./routes/UserRoutes";
 
 function App() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-bold underline">Resume Builder</h1>
-    </div>
+    <Routes>
+      {UserRoutes()}
+      {AdminRoutes()}
+    </Routes>
   );
 }
 
