@@ -35,7 +35,7 @@ const LoginForm = () => {
       if (user.role === "admin") {
         navigate("/admin/dashboard", { replace: true });
       } else if (user.role === "user") {
-        navigate("/resume", { replace: true });
+        navigate("/resumes", { replace: true });
       } else {
         navigate(from, { replace: true });
       }

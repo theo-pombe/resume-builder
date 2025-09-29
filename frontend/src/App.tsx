@@ -7,6 +7,7 @@ import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
 import Unauthorized from "./pages/Unauthorized";
 import GuestGuard from "./contexts/GuestGuard";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
       />
 
       <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

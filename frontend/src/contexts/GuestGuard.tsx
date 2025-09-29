@@ -15,7 +15,7 @@ const GuestGuard = ({ children }: { children: React.ReactNode }) => {
       case "admin":
         return <Navigate to="/admin/dashboard" replace />;
       case "user":
-        return <Navigate to="/resume" replace />;
+        return <Navigate to="/resumes" replace />;
       default:
         return <Navigate to={from} replace />;
     }
