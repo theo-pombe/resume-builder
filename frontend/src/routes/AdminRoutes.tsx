@@ -1,6 +1,6 @@
 import { Navigate, Route } from "react-router";
 import AdminLayout from "../layouts/admin/AdminLayout";
-import Dashboard from "../pages/admin/Dashboard";
+import Dashboard from "../pages/admin/dashboard";
 
 const AdminRoutes = () => {
   return (
