@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
 import Logo from "../components/ui/Logo";
 import TopNavBar from "../components/TopNavBar";
+import UserProfileMenu from "../components/UserProfileMenu";
 
 const Header = () => {
   const { t } = useTranslation();
@@ -25,7 +26,9 @@ const Header = () => {
           <LanguageSwitcher />
 
           {user !== undefined ? (
-            <div className="flex space-x-2">{user.username}</div>
+            <div className="flex space-x-2">
+              <UserProfileMenu />
+            </div>
           ) : (
             <NavLink
               to="auth/login"
