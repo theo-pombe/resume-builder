@@ -1,0 +1,201 @@
+import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../hooks/useAuth";
+import Spinner from "./ui/Spinner";
+
+interface ProfileAccountModalProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0";
+
+export default function ProfileAccountModal({
+  open,
+  onClose,
+}: ProfileAccountModalProps) {
+  const { user: authUser, logout } = useAuth();
+
+  const [user, setUser] = useState<{
+    _id: string;
+    username: string;
+    email: string;
+    role: "admin" | "user";
+    password?: string;
+  }>();
+  const [username, setUsername] = useState<string | undefined>(
+    authUser?.username
+  );
+  const [email, setEmail] = useState<string | undefined>(authUser?.email);
+  const [password, setPassword] = useState<string>();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("Token is required");
+
+  async function fetchUser() {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/account/${authUser?.username}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const result = await res.json();
+      setUser(result.data);
+      setUsername(result.data?.username);
+      setEmail(result.data?.email);
+    } catch (error) {
+      console.error(error);
+      setUser(undefined);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSave(ev: React.FormEvent<HTMLFormElement>) {
+    ev.preventDefault();
+
+    try {
+      const payload: Record<string, any> = {};
+      let requiresLogout = false;
+
+      if (user?.username !== username) {
+        payload.newUsername = username;
+        requiresLogout = true;
+      }
+      if (user?.email !== email) {
+        payload.newEmail = email;
+      }
+      if (password) {
+        payload.newPassword = password;
+        requiresLogout = true;
+      }
+
+      const res = await fetch(`${API_BASE_URL}/account/${authUser?.username}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || "Failed to update account");
+      }
+
+      if (requiresLogout) {
+        // force logout if username or password changed
+        logout();
+        return;
+      }
+
+      setUser(result.user); // server returns updated user
+      setPassword(undefined);
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    if (open) fetchUser();
+  }, [open, authUser?.username]);
+
+  if (!open) return null;
+  if (loading) return <Spinner />;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-xl p-6 relative">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-semibold text-gray-800">
+            Update Account
+          </h2>
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSave} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-500 mb-1">
+              Role
+            </label>
+            <input
+              type="text"
+              value={authUser?.role || ""}
+              readOnly
+              className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+            />
+          </div>
+
+          <div className="pt-4">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              Change Username
+            </h3>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter new username"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none"
+            />
+          </div>
+
+          <div className="pt-4">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              Change Email
+            </h3>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter new email"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none"
+            />
+          </div>
+
+          <div className="pt-4">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              Change Password
+            </h3>
+
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="New password"
+              autoComplete="new-password"
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 mt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-lg border text-gray-600 hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

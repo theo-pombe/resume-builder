@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useCallback, memo } from "react";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
+import ProfileAccountModal from "./ProfileAccountModal";
 
 interface DropdownItemProps {
   icon: React.ReactNode;
@@ -30,6 +31,7 @@ function UserProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const onLogout = useCallback(
@@ -99,6 +101,16 @@ function UserProfileMenu() {
           {user?.username}
         </div>
 
+        <DropdownItem
+          icon={<Settings className="w-4 h-4" />}
+          label="Account"
+          onClick={() => {
+            setOpen(false);
+            setModalOpen(true);
+          }}
+          borderTop
+        />
+
         <form method="post" onSubmit={onLogout}>
           <DropdownItem
             icon={<LogOut className="w-4 h-4" />}
@@ -108,6 +120,11 @@ function UserProfileMenu() {
           />
         </form>
       </div>
+
+      <ProfileAccountModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
     </div>
   );
 }
