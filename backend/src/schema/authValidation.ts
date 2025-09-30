@@ -11,14 +11,7 @@ export const registerBodySchema = Joi.object({
   email: Joi.string()
     .trim()
     .lowercase()
-    .required()
-    .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/)
-    .messages({
-      "string.base": "Email must be a text.",
-      "string.empty": "Email is required.",
-      "string.pattern.base": "Please provide a valid email address.",
-      "any.required": "Email is required.",
-    }),
+    .email({ tlds: { allow: false } }),
   role: Joi.string().valid("user").required().messages({
     "any.only": "Only 'user' role is allowed during registration.",
     "string.base": "Role must be a text.",

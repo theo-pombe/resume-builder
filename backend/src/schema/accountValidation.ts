@@ -9,11 +9,7 @@ export const updateAccountBodySchema = Joi.object({
   newEmail: Joi.string()
     .trim()
     .lowercase()
-    .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/)
-    .messages({
-      "string.base": "newEmail must be a text.",
-      "any.required": "newEmail is required.",
-    }),
+    .email({ tlds: { allow: false } }),
   newPassword: Joi.string().min(6).messages({
     "string.base": "newPassword must be a text.",
     "string.min": "Password must be at least 8 characters long.",
