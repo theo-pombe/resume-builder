@@ -14,7 +14,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: UserRole;
-  avatar?: string;
+  avatar: string | null;
   resumes?: Types.ObjectId[];
   isActive: boolean;
   createdAt: Date;

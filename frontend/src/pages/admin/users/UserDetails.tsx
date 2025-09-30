@@ -45,16 +45,32 @@ const Userdetails = () => {
 
     try {
       const form = new FormData();
-      Object.keys(formData).forEach((key) => {
-        form.append(key, formData[key]);
-      });
+
+      // Only append fields that changed
+      if (formData.username !== user.username) {
+        form.append("username", formData.username);
+      }
+      if (formData.email !== user.email) {
+        form.append("email", formData.email);
+      }
+      if (formData.role !== user.role) {
+        form.append("role", formData.role);
+      }
       if (avatar instanceof File) {
-        form.append("avatar", avatar); // backend expects "avatar"
+        form.append("avatar", avatar);
+      }
+
+      // If nothing changed, just return
+      if (form.entries().next().done) {
+        setLoading(false);
+        return;
       }
 
       const res = await fetch(`${API_BASE_URL}/users/${user.username}`, {
         method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: form,
       });
 
@@ -101,7 +117,6 @@ const Userdetails = () => {
           handleDelete={handleDelete}
           avatar={avatar}
           setAvatar={setAvatar}
-          user={user}
         />
       </div>
 

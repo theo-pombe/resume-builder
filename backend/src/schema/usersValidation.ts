@@ -19,8 +19,4 @@ export const EditUserBodySchema = Joi.object({
   avatar: Joi.string().uri().messages({
     "string.uri": "Image must be a valid URL",
   }),
-})
-  .min(1)
-  .messages({
-    "object.min": "At least one field must be provided for update.",
-  });
+}).optional();

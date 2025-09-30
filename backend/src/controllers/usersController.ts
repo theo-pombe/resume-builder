@@ -8,15 +8,18 @@ class UsersController {
       .populate("resumes")
       .sort({ createdAt: -1 });
 
+    const host = `${req.protocol}://${req.get("host")}`;
+
     const usersResponse = users.map((u) => {
+      const userObj = u.toObject();
       return {
-        id: u.id,
-        username: u.username,
-        email: u.email,
-        role: u.role,
-        avatar: u.avatar,
-        totalResume: u.resumes?.length,
-        isActive: u.isActive,
+        id: userObj.id,
+        username: userObj.username,
+        email: userObj.email,
+        role: userObj.role,
+        avatar: userObj.avatar ? `${host}/uploads/${userObj.avatar}` : null, // full URL for avatar
+        totalResume: userObj.resumes?.length,
+        isActive: userObj.isActive,
       };
     });
 
@@ -34,25 +37,41 @@ class UsersController {
       "resumes",
       "id title createdAt"
     );
+
     if (!user) throw new NotFoundError("User not found");
+
+    const host = `${req.protocol}://${req.get("host")}`;
+    const userObj = user.toObject();
+    userObj.avatar = userObj.avatar
+      ? `${host}/uploads/${userObj.avatar}`
+      : null;
 
     return res.status(200).json({
       success: true,
       message: "User retrieved successfully",
-      data: user,
+      data: userObj,
     });
   };
 
   updateUser = async (req: Request, res: Response) => {
     const { username } = req.params;
 
-    const user = await User.findOneAndUpdate(
-      { username },
-      { ...req.body },
-      { new: true, runValidators: true }
-    );
+    // Build the update object dynamically
+    const updateData: Record<string, any> = { ...req.body };
 
-    if (!user) throw new NotFoundError("User not found");
+    // If an avatar file was uploaded, save its filename
+    if (req.file) {
+      updateData.avatar = req.file.filename;
+    }
+
+    const user = await User.findOneAndUpdate({ username }, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
 
     return res.status(200).json({
       success: true,

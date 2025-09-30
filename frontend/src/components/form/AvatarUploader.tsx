@@ -1,15 +1,13 @@
-import { useRef } from "react";
+import { useRef, useEffect, useMemo } from "react";
 
 interface AvatarUploaderProps {
-  avatar: File | string | undefined;
+  avatar: File | string | undefined; // File for new upload, string for existing backend URL
   setAvatar: (file: File | string | undefined) => void;
-  existingUrl?: string; // backend avatar path
 }
 
 const AvatarUploader: React.FC<AvatarUploaderProps> = ({
   avatar,
   setAvatar,
-  existingUrl,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,24 +16,25 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
     if (file) setAvatar(file);
   };
 
-  const getPreviewUrl = () => {
+  // Generate preview URL
+  const previewUrl = useMemo(() => {
     if (avatar instanceof File) {
-      return URL.createObjectURL(avatar);
+      return URL.createObjectURL(avatar); // preview for new file
     }
     if (typeof avatar === "string") {
-      return `${import.meta.env.VITE_API_BASE_URL?.replace(
-        "/api/v0/admin",
-        ""
-      )}/uploads/${avatar}`;
-    }
-    if (existingUrl) {
-      return `${import.meta.env.VITE_API_BASE_URL?.replace(
-        "/api/v0/admin",
-        ""
-      )}/uploads/${existingUrl}`;
+      return avatar; // full URL from backend
     }
     return null;
-  };
+  }, [avatar]);
+
+  // Cleanup object URL for memory
+  useEffect(() => {
+    return () => {
+      if (avatar instanceof File && previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [avatar, previewUrl]);
 
   return (
     <div
@@ -44,9 +43,9 @@ const AvatarUploader: React.FC<AvatarUploaderProps> = ({
                  font-semibold overflow-hidden cursor-pointer relative"
       onClick={() => fileInputRef.current?.click()}
     >
-      {getPreviewUrl() ? (
+      {previewUrl ? (
         <img
-          src={getPreviewUrl() || ""}
+          src={previewUrl} // full URL or object URL
           alt="avatar"
           className="w-full h-full object-cover"
         />

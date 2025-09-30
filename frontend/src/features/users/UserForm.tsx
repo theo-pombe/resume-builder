@@ -7,7 +7,6 @@ interface UserFormProps {
   handleDelete: (e: React.MouseEvent) => void;
   avatar: File | string | undefined;
   setAvatar: (file: File | string | undefined) => void;
-  user: any;
 }
 
 const UserForm: React.FC<UserFormProps> = ({
@@ -17,7 +16,6 @@ const UserForm: React.FC<UserFormProps> = ({
   handleDelete,
   avatar,
   setAvatar,
-  user,
 }) => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -27,11 +25,7 @@ const UserForm: React.FC<UserFormProps> = ({
 
   return (
     <form onSubmit={handleUpdate} className="space-y-5">
-      <AvatarUploader
-        avatar={avatar}
-        setAvatar={setAvatar}
-        existingUrl={user.avatar}
-      />
+      <AvatarUploader avatar={avatar} setAvatar={setAvatar} />
 
       {/* Username */}
       <div>
