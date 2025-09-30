@@ -1,13 +1,13 @@
 import { type Request, type Response } from "express";
-import User from "../models/User.js";
 import { NotFoundError } from "../utils/apiError.js";
+import { User } from "../models/index.js";
 
 class UsersController {
   getUsers = async (req: Request, res: Response) => {
     const users = await User.find({ deletedAt: null })
-      .populate("resumes", "_id title")
+      .populate("resumes", "id title")
       .sort({ createdAt: -1 })
-      .lean();
+      .lean({ virtuals: true });
 
     return res.status(200).json({
       success: true,
@@ -19,10 +19,9 @@ class UsersController {
   getUser = async (req: Request, res: Response) => {
     const { username } = req.params;
 
-    const user = await User.findOne({ username, deletedAt: null }).populate(
-      "resumes",
-      "_id title"
-    );
+    const user = await User.findOne({ username, deletedAt: null })
+      .populate("resumes", "id title")
+      .lean({ virtuals: true });
     if (!user) throw new NotFoundError("User not found");
 
     return res.status(200).json({
