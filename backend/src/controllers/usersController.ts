@@ -5,14 +5,25 @@ import { User } from "../models/index.js";
 class UsersController {
   getUsers = async (req: Request, res: Response) => {
     const users = await User.find({ deletedAt: null })
-      .populate("resumes", "id title")
-      .sort({ createdAt: -1 })
-      .lean({ virtuals: true });
+      .populate("resumes")
+      .sort({ createdAt: -1 });
+
+    const usersResponse = users.map((u) => {
+      return {
+        id: u.id,
+        username: u.username,
+        email: u.email,
+        role: u.role,
+        avatar: u.avatar,
+        totalResume: u.resumes?.length,
+        isActive: u.isActive,
+      };
+    });
 
     return res.status(200).json({
       success: true,
       message: "Users retrieved successfully",
-      data: users,
+      data: usersResponse,
     });
   };
 
