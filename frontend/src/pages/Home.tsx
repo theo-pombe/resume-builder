@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import HowitWorkSection from "../components/HowitWorkSection";
+import StepCards from "../components/cards/StepCards";
 
 const Home = () => {
   const { t } = useTranslation();
@@ -19,7 +21,7 @@ const Home = () => {
           </div>
 
           <Link
-            to="/resume"
+            to="/resumes"
             className="inline-flex items-center gap-2 bg-amber-800 text-white hover:bg-slate-800 transition-colors rounded-lg font-medium px-8 py-3"
           >
             {t("cta_button")}
@@ -35,6 +37,10 @@ const Home = () => {
           />
         </article>
       </section>
+
+      <HowitWorkSection>
+        <StepCards />
+      </HowitWorkSection>
     </>
   );
 };
