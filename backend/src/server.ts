@@ -4,6 +4,7 @@ import { authenticate, authorize } from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { errorLogger, requestLogger } from "./middlewares/loggers.js";
 import accountRouter from "./routes/accountRouter.js";
+import adminRouter from "./routes/adminRouter.js";
 import authRouter from "./routes/authRouter.js";
 import { logger } from "./utils/logger.js";
 
@@ -19,6 +20,7 @@ async function startServer() {
     // Routes
     app.use("/api/v0/auth", authRouter);
     app.use("/api/v0/account", authenticate, accountRouter);
+    app.use("/api/v0/admin", authenticate, authorize("admin"), adminRouter);
 
     // Error handling
     app.use(errorLogger);
