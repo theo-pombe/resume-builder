@@ -30,9 +30,10 @@ class UsersController {
   getUser = async (req: Request, res: Response) => {
     const { username } = req.params;
 
-    const user = await User.findOne({ username, deletedAt: null })
-      .populate("resumes", "id title")
-      .lean({ virtuals: true });
+    const user = await User.findOne({ username, deletedAt: null }).populate(
+      "resumes",
+      "id title createdAt"
+    );
     if (!user) throw new NotFoundError("User not found");
 
     return res.status(200).json({
