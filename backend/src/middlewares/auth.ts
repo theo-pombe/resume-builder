@@ -22,7 +22,7 @@ export const authenticate = async (
     const isVerifiedUser = verifyToken(authToken);
     if (!isVerifiedUser) return next(new UnauthorizedError("Not authorized"));
 
-    const user = await User.findById(isVerifiedUser.id).lean();
+    const user = await User.findById(isVerifiedUser.id);
     if (!user) return next(new NotFoundError("User doesn't exists"));
     req.user = {
       id: user.id,

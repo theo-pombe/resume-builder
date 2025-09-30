@@ -1,7 +1,9 @@
 import app from "./app.js";
 import connectDB from "./database/index.js";
+import { authenticate, authorize } from "./middlewares/auth.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import { errorLogger, requestLogger } from "./middlewares/loggers.js";
+import accountRouter from "./routes/accountRouter.js";
 import authRouter from "./routes/authRouter.js";
 import { logger } from "./utils/logger.js";
 
@@ -16,6 +18,7 @@ async function startServer() {
 
     // Routes
     app.use("/api/v0/auth", authRouter);
+    app.use("/api/v0/account", authenticate, accountRouter);
 
     // Error handling
     app.use(errorLogger);
