@@ -7,6 +7,7 @@ import Alert from "../../components/ui/Alert";
 import { useNavigate, useParams } from "react-router";
 import SectionDivider from "../../components/ui/SectionDivider";
 import { useAuth } from "../../hooks/useAuth";
+import ResumeForm from "../../features/forms/ResumeForm";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/resumes";
@@ -17,6 +18,7 @@ const Resume = () => {
   const [resume, setResume] = useState<any>();
   const [loading, setLoading] = useState<boolean>(true);
   const [alert, setAlert] = useState<AlertType>();
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -50,6 +52,26 @@ const Resume = () => {
       setResume(undefined);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleUpdate(formData: FormData): Promise<void> {
+    if (!resume?._id) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/${resume._id}`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        setAlert({ success: false, messages: [result.message] });
+      } else {
+        setResume(result.data);
+        setIsEditing(false);
+      }
+    } catch (err: any) {
+      setAlert({ success: false, messages: [err.message] });
     }
   }
 
@@ -89,39 +111,54 @@ const Resume = () => {
 
       <SectionDivider title={t("resume_summary")} />
 
-      <div className="flex gap-6 flex-wrap flex-col justify-between min-h-[57vh]">
-        <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200 space-y-4">
-          {resume.avatar && (
-            <img
-              src={resume.avatar}
-              alt="Resume Avatar"
-              className="w-24 h-24 mt-4 rounded-full object-cover"
-            />
-          )}
-          <h2 className="text-2xl font-bold text-gray-800">
-            {t(`${resume.title}`)}
-          </h2>
-          <p className="text-gray-600 leading-relaxed">{resume.summary}</p>
-        </div>
+      {isEditing ? (
+        <ResumeForm
+          initialValues={{
+            title: resume?.title,
+            summary: resume?.summary,
+            avatar: resume?.avatar, // backend avatar URL
+            declaration: resume?.declaration,
+          }}
+          onSubmit={handleUpdate}
+          isUpdate={!!resume?._id}
+          setIsEditing={setIsEditing}
+        />
+      ) : (
+        <div className="flex gap-6 flex-wrap flex-col justify-between min-h-[57vh]">
+          <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200 space-y-4">
+            {resume.avatar && (
+              <img
+                src={resume.avatar}
+                alt="Resume Avatar"
+                className="w-24 h-24 mt-4 rounded-full object-cover"
+              />
+            )}
+            <h2 className="text-2xl font-bold text-gray-800">
+              {t(`${resume.title}`)}
+            </h2>
+            <p className="text-gray-600 leading-relaxed">{resume.summary}</p>
+          </div>
 
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="flex items-center font-medium bg-yellow-500 hover:bg-yellow-400 text-gray-800 text-nowrap cursor-pointer px-3.5 py-1.5 gap-x-2 rounded"
-          >
-            <span className="capitalize">{t("edit")}</span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="flex items-center font-medium bg-yellow-500 hover:bg-yellow-400 text-gray-800 text-nowrap cursor-pointer px-3.5 py-1.5 gap-x-2 rounded"
+            >
+              <span className="capitalize">{t("edit")}</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={onNextHandler}
-            className="flex items-center font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-nowrap cursor-pointer px-3.5 py-1.5 gap-x-2 rounded"
-          >
-            <span className="capitalize">{t("personal_information")}</span>
-            <ArrowRight size={16} />
-          </button>
+            <button
+              type="button"
+              onClick={onNextHandler}
+              className="flex items-center font-medium bg-slate-700 hover:bg-slate-600 text-gray-200 text-nowrap cursor-pointer px-3.5 py-1.5 gap-x-2 rounded"
+            >
+              <span className="capitalize">{t("personal_information")}</span>
+              <ArrowRight size={16} />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
