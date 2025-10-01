@@ -10,8 +10,6 @@ export const normalizeUpdateUserBody = (
   if (req.body && Object.keys(req.body).length > 0) {
     const normalizedBody: Record<string, any> = {};
 
-    console.log({ before: req.body });
-
     for (const key in req.body) {
       const value = req.body[key];
 
@@ -23,9 +21,35 @@ export const normalizeUpdateUserBody = (
     }
 
     req.body = normalizedBody;
-
-    console.log({ after: req.body });
   }
+
+  next();
+};
+
+export const normalizeResumeBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return next();
+  }
+
+  const normalizedBody: Record<string, any> = {};
+
+  for (const [key, value] of Object.entries(req.body)) {
+    if (key === "declaration" && typeof value === "string") {
+      try {
+        normalizedBody.declaration = JSON.parse(value);
+      } catch {
+        return res.status(400).json({ error: "Invalid declaration format" });
+      }
+    } else {
+      normalizedBody[key] = typeof value === "string" ? value : String(value);
+    }
+  }
+
+  req.body = normalizedBody;
 
   next();
 };

@@ -28,7 +28,7 @@ class ResumesController {
       throw new ConflictError("Resume with this title already exists");
     }
 
-    const resume = await Resume.create({
+    await Resume.create({
       user: userId,
       title: req.body.title,
       summary: req.body.summary,
@@ -39,7 +39,6 @@ class ResumesController {
     return res.status(201).json({
       success: true,
       message: "Resume created successfully",
-      data: this.normalizeResume(req, resume),
     });
   };
 
