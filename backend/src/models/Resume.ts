@@ -7,12 +7,13 @@ interface IDeclaration {
   date?: Date;
 }
 
-interface IResume extends Document {
+export interface IResume extends Document {
   user: Types.ObjectId;
   title: string;
   summary: string;
   avatar?: string;
   declaration: IDeclaration;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
@@ -37,6 +38,11 @@ const ResumeSchema = new Schema<IResume>(
     deletedAt: { type: Date },
   },
   { timestamps: true }
+);
+
+ResumeSchema.index(
+  { user: 1, title: 1 },
+  { unique: true, partialFilterExpression: { deletedAt: null } }
 );
 
 ResumeSchema.virtual("displayAvatar").get(function () {
