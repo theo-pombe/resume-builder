@@ -14,8 +14,4 @@ export const updateAccountBodySchema = Joi.object({
     "string.base": "newPassword must be a text.",
     "string.min": "Password must be at least 8 characters long.",
   }),
-})
-  .min(1)
-  .messages({
-    "object.min": "At least one field must be provided for update",
-  });
+}).optional();

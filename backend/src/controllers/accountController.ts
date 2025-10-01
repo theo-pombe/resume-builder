@@ -23,10 +23,16 @@ class AccountController {
     );
     if (!user) throw new NotFoundError("User not found");
 
+    const host = `${req.protocol}://${req.get("host")}`;
+    const userObj = user.toObject();
+    userObj.avatar = userObj.avatar
+      ? `${host}/uploads/${userObj.avatar}`
+      : null;
+
     res.status(200).json({
       success: true,
       message: "Account retrieved successfully",
-      data: user,
+      data: userObj,
     });
   };
 
@@ -59,6 +65,9 @@ class AccountController {
     }
 
     if (newPassword) existingUser.password = newPassword; // pre-save hook will hash
+
+    // If an avatar file was uploaded, save its filename
+    if (req.file) existingUser.avatar = req.file.filename;
 
     const user = await existingUser.save();
 

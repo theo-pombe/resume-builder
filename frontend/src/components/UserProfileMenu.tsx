@@ -78,12 +78,22 @@ function UserProfileMenu() {
       <div>
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition"
+          className="flex items-center justify-center"
           aria-haspopup="true"
           aria-expanded={open}
         >
-          <span className="text-gray-600 font-bold">
-            {getInitials(user?.username)}
+          <span className="">
+            {user?.avatar ? (
+              <img
+                src={`http://localhost:8080/uploads/${user.avatar}`}
+                alt={user.username}
+                className="rounded-full object-cover w-10 h-10"
+              />
+            ) : (
+              <div className="rounded-full bg-gray-200 hover:bg-gray-300 transition text-gray-600 font-bold w-10 h-10">
+                {getInitials(user?.username)}
+              </div>
+            )}
           </span>
         </button>
       </div>

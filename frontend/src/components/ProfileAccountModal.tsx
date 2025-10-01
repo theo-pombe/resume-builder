@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import Spinner from "./ui/Spinner";
+import AvatarUploader from "./form/AvatarUploader";
 
 interface ProfileAccountModalProps {
   open: boolean;
@@ -22,12 +23,16 @@ export default function ProfileAccountModal({
     username: string;
     email: string;
     role: "admin" | "user";
+    avatar?: File | string;
     password?: string;
   }>();
   const [username, setUsername] = useState<string | undefined>(
     authUser?.username
   );
   const [email, setEmail] = useState<string | undefined>(authUser?.email);
+  const [avatar, setAvatar] = useState<File | string | undefined>(
+    authUser?.avatar
+  );
   const [password, setPassword] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -46,6 +51,7 @@ export default function ProfileAccountModal({
       setUser(result.data);
       setUsername(result.data?.username);
       setEmail(result.data?.email);
+      setAvatar(result.data?.avatar);
     } catch (error) {
       console.error(error);
       setUser(undefined);
@@ -54,32 +60,37 @@ export default function ProfileAccountModal({
     }
   }
 
-  async function handleSave(ev: React.FormEvent<HTMLFormElement>) {
+  async function handleUpdate(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault();
 
+    if (!user) return;
+
     try {
-      const payload: Record<string, any> = {};
+      const form = new FormData();
       let requiresLogout = false;
 
-      if (user?.username !== username) {
-        payload.newUsername = username;
+      // Only append fields that changed
+      if (username && username !== user.username) {
+        form.append("newUsername", username);
         requiresLogout = true;
       }
-      if (user?.email !== email) {
-        payload.newEmail = email;
+      if (email && email !== user.email) {
+        form.append("newEmail", email);
       }
-      if (password) {
-        payload.newPassword = password;
+      if (password && password !== user.password) {
+        form.append("newPassword", password);
         requiresLogout = true;
+      }
+      if (avatar instanceof File) {
+        form.append("newAvatar", avatar);
       }
 
       const res = await fetch(`${API_BASE_URL}/account/${authUser?.username}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: form,
       });
 
       const result = await res.json();
@@ -124,7 +135,9 @@ export default function ProfileAccountModal({
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="space-y-5">
+        <form onSubmit={handleUpdate} className="space-y-5">
+          <AvatarUploader avatar={avatar} setAvatar={setAvatar} />
+
           <div>
             <label className="block text-sm font-medium text-gray-500 mb-1">
               Role
