@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
 import ProfileAccountModal from "./ProfileAccountModal";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0";
+
 interface DropdownItemProps {
   icon: React.ReactNode;
   label: string;
@@ -34,6 +37,25 @@ function UserProfileMenu() {
   const [modalOpen, setModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const [avatar, setAvatar] = useState<string | undefined>(user?.avatar);
+
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("Token is required");
+
+  async function fetchUser() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/account/${user?.username}`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const result = await res.json();
+      setAvatar(result.data.avatar);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const onLogout = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -44,6 +66,8 @@ function UserProfileMenu() {
   );
 
   useEffect(() => {
+    fetchUser();
+
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setOpen(false);
@@ -83,10 +107,10 @@ function UserProfileMenu() {
           aria-expanded={open}
         >
           <span className="">
-            {user?.avatar ? (
+            {avatar ? (
               <img
-                src={`http://localhost:8080/uploads/${user.avatar}`}
-                alt={user.username}
+                src={avatar}
+                alt={user && user.username}
                 className="rounded-full object-cover w-10 h-10"
               />
             ) : (
@@ -133,7 +157,10 @@ function UserProfileMenu() {
 
       <ProfileAccountModal
         open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        onClose={() => {
+          setModalOpen(false);
+          fetchUser();
+        }}
       />
     </div>
   );
