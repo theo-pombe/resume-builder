@@ -6,6 +6,7 @@ import { errorLogger, requestLogger } from "./middlewares/loggers.js";
 import accountRouter from "./routes/accountRouter.js";
 import adminRouter from "./routes/adminRouter.js";
 import authRouter from "./routes/authRouter.js";
+import userResumesRouter from "./routes/userResumesRouter.js";
 import { logger } from "./utils/logger.js";
 
 async function startServer() {
@@ -21,6 +22,12 @@ async function startServer() {
     app.use("/api/v0/auth", authRouter);
     app.use("/api/v0/account", authenticate, accountRouter);
     app.use("/api/v0/admin", authenticate, authorize("admin"), adminRouter);
+    app.use(
+      "/api/v0/resumes",
+      authenticate,
+      authorize("user"),
+      userResumesRouter
+    );
 
     // Error handling
     app.use(errorLogger);
