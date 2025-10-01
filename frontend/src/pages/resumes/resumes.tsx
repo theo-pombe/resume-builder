@@ -2,21 +2,30 @@ import type { AlertType } from "app-ui";
 import { useEffect, useRef, useState } from "react";
 import Alert from "../../components/ui/Alert";
 import Spinner from "../../components/ui/Spinner";
-import { Edit, Eye, MoreVertical, Plus, X } from "lucide-react";
+import { Eye, MoreVertical, Plus, X } from "lucide-react";
 import { Link } from "react-router";
+import { useAuth } from "../../hooks/useAuth";
+import { useTranslation } from "react-i18next";
+import { getInitials } from "../../utilities/textFormat";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/resumes";
 
-const ResumeItem = ({ resume }: { resume: any }) => (
+const ResumeItem = ({ resume, t }: { resume: any; t: any }) => (
   <div className="flex items-center space-x-4 p-4 border border-gray-400 rounded-md mb-4 min-h-48 hover:shadow-sm transition-shadow">
-    <img
-      src={resume.avatar || "/default-avatar.png"}
-      alt={resume.title}
-      className="w-16 h-16 rounded-full object-cover"
-    />
+    {resume.avatar ? (
+      <img
+        src={resume.avatar}
+        alt={resume.title}
+        className="rounded-full object-cover w-16 h-16"
+      />
+    ) : (
+      <div className="rounded-full bg-gray-200 hover:bg-gray-300 transition text-gray-600 font-bold w-16 h-16 flex items-center justify-center">
+        {getInitials(resume.title)}
+      </div>
+    )}
     <div className="flex-1">
-      <p className="font-semibold capitalize">{resume.title}</p>
+      <p className="font-semibold capitalize">{t(`${resume.title}`)}</p>
       <p className="text-gray-500 text-sm">{resume.summary}</p>
     </div>
   </div>
@@ -28,6 +37,8 @@ const Resumes = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const { user } = useAuth();
+  const { t } = useTranslation();
 
   const token = localStorage.getItem("token");
   if (!token) throw new Error("Token is required");
@@ -71,6 +82,39 @@ const Resumes = () => {
     }
   };
 
+  const deleteResume = async (id: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const result = await res.json();
+
+      if (!result.success) {
+        return setAlert({
+          success: false,
+          messages: [result.message || "Failed to delete resume"],
+        });
+      }
+
+      setAlert({
+        success: true,
+        messages: ["Resume deleted successfully"],
+      });
+
+      fetchResumes();
+    } catch (error: any) {
+      setAlert({
+        success: false,
+        messages: [error.message || "Something went wrong"],
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchResumes();
   }, []);
@@ -97,17 +141,19 @@ const Resumes = () => {
         </div>
       )}
 
-      <div className="flex justify-end mb-6 py-6">
-        <div>
-          {resumes.length > 0 && (
-            <Link
-              to="/resumes/new"
-              className="flex items-center space-x-1.5 bg-blue-100 text-blue-600 px-4 py-2 font-medium cursor-pointer rounded-md hover:bg-blue-200"
-            >
-              <Plus size={18} />
-              <span>Add Resume</span>
-            </Link>
-          )}
+      <div className="flex flex-col items-end space-y-4 mb-4 py-2">
+        <h1 className="text-lg sm:text-xl font-semibold text-gray-800 text-center sm:text-left">
+          {t("welcome", { username: user?.username || "" })}
+        </h1>
+
+        <div className="fixed right-16 bottom-16">
+          <Link
+            to="/resumes/new"
+            className="flex items-center space-x-1.5 bg-blue-200 text-blue-700 px-4 py-2 font-medium cursor-pointer rounded-md hover:bg-blue-200"
+          >
+            <Plus size={18} />
+            <span>Add Resume</span>
+          </Link>
         </div>
       </div>
 
@@ -118,7 +164,7 @@ const Resumes = () => {
               key={r._id}
               className="bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition"
             >
-              <ResumeItem resume={r} />
+              <ResumeItem resume={r} t={t} />
               <div className="mt-3 flex justify-between items-center">
                 <p className="text-gray-500 text-sm">
                   Last updated: {new Date(r.updatedAt).toLocaleDateString()}
@@ -148,14 +194,8 @@ const Resumes = () => {
                         <Eye size={16} />
                         View
                       </Link>
-                      <Link
-                        to={`/resumes/${r.id}/edit`}
-                        className="flex items-center gap-x-2 w-full text-left px-3 text-sm py-1.5 hover:bg-gray-100"
-                      >
-                        <Edit size={15} /> Update
-                      </Link>
                       <button
-                        // onClick={handleDelete}
+                        onClick={() => deleteResume(r._id)}
                         className="flex items-center gap-x-2 w-full text-left px-3 text-sm py-1.5 cursor-pointer hover:bg-gray-100 text-red-600"
                       >
                         <X size={17} /> Delete
@@ -172,12 +212,6 @@ const Resumes = () => {
           <p className="text-gray-500 mb-4 text-lg">
             You haven't added any resumes yet.
           </p>
-          <Link
-            to="/resumes/new"
-            className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
-          >
-            Create Resume
-          </Link>
         </div>
       )}
     </div>
