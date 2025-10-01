@@ -9,6 +9,7 @@ import ResumeLayout from "../layouts/ResumeLayout";
 import Templates from "../pages/templates/templates";
 import Resume from "../pages/resumes/resume";
 import Template from "../pages/templates/template";
+import ResumeNew from "../pages/resumes/resumenew";
 
 const UserRoutes = () => {
   return (
@@ -20,6 +21,15 @@ const UserRoutes = () => {
         element={
           <UserGuard>
             <Resumes />
+          </UserGuard>
+        }
+      />
+
+      <Route
+        path="resumes/new"
+        element={
+          <UserGuard>
+            <ResumeNew />
           </UserGuard>
         }
       />

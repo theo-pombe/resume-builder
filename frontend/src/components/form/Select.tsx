@@ -30,7 +30,7 @@ const Select = ({
       className={
         style
           ? style
-          : "outline-none border border-gray-400 rounded px-2.5 py-1.5 text-sm placeholder:capitalizestyle"
+          : "outline-none border border-gray-400 rounded px-2.5 py-2.5 text-sm placeholder:capitalizestyle"
       }
     >
       {label && <option label={label} value=""></option>}

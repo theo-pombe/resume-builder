@@ -194,7 +194,7 @@ const ResumeForm: React.FC<ResumeFormProps> = ({
       </div>
 
       {/* Avatar */}
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1 w-fit">
         <Label text={t("avatar")} htmlFor="avatar" />
         <input
           type="file"
@@ -239,18 +239,21 @@ const ResumeForm: React.FC<ResumeFormProps> = ({
         />
       </div>
 
-      <TextInput
-        name="declaration.date"
-        type="date"
-        value={
-          formDataState.declaration.date
-            ? new Date(formDataState.declaration.date)
-                .toISOString()
-                .split("T")[0]
-            : ""
-        }
-        onChange={handleChange}
-      />
+      <div className="flex flex-col gap-1 w-fit">
+        <Label htmlFor="signature" text={t("date")} />
+        <TextInput
+          name="declaration.date"
+          type="date"
+          value={
+            formDataState.declaration.date
+              ? new Date(formDataState.declaration.date)
+                  .toISOString()
+                  .split("T")[0]
+              : ""
+          }
+          onChange={handleChange}
+        />
+      </div>
 
       {/* Buttons */}
       <div className="flex items-center justify-between mt-5">
