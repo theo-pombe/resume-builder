@@ -1,12 +1,18 @@
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
+  totalItems: number;
+  startIndex: number;
+  totalPaginatedItems: number;
   onPageChange: (page: number) => void;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
+  totalItems,
+  startIndex,
+  totalPaginatedItems,
   onPageChange,
 }) => {
   if (totalPages <= 1) return null;
@@ -41,47 +47,58 @@ const Pagination: React.FC<PaginationProps> = ({
   const pages = getPageNumbers();
 
   return (
-    <div className="flex items-center justify-end space-x-2 mt-6 absolute right-8 bottom-16">
-      <span className="hidden"> {pages}</span>
+    <div className="absolute w-full bottom-0">
+      <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center text-sm text-gray-600">
+          <p>
+            Showing {startIndex + 1}–{startIndex + totalPaginatedItems} of{" "}
+            {totalItems} users
+          </p>
+        </div>
 
-      {/* Prev button */}
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-1 rounded border text-sm cursor-pointer hover:bg-gray-100 disabled:opacity-50"
-      >
-        Prev
-      </button>
+        <div className="flex items-center justify-end space-x-2">
+          <span className="hidden"> {pages}</span>
 
-      {/* Page numbers */}
-      {pages.map((page, idx) =>
-        typeof page === "number" ? (
+          {/* Prev button */}
           <button
-            key={idx}
-            onClick={() => onPageChange(page)}
-            className={`px-3 py-1 rounded border text-sm cursor-pointer ${
-              page === currentPage
-                ? "bg-blue-500 text-white"
-                : "hover:bg-gray-100"
-            }`}
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded border text-sm cursor-pointer hover:bg-gray-100 disabled:opacity-50"
           >
-            {page}
+            Prev
           </button>
-        ) : (
-          <span key={idx} className="px-2">
-            {page}
-          </span>
-        )
-      )}
 
-      {/* Next button */}
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-1 rounded border text-sm hover:bg-gray-100 disabled:opacity-50"
-      >
-        Next
-      </button>
+          {/* Page numbers */}
+          {pages.map((page, idx) =>
+            typeof page === "number" ? (
+              <button
+                key={idx}
+                onClick={() => onPageChange(page)}
+                className={`px-3 py-1 rounded border text-sm cursor-pointer ${
+                  page === currentPage
+                    ? "bg-blue-500 text-white"
+                    : "hover:bg-gray-100"
+                }`}
+              >
+                {page}
+              </button>
+            ) : (
+              <span key={idx} className="px-2">
+                {page}
+              </span>
+            )
+          )}
+
+          {/* Next button */}
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded border text-sm hover:bg-gray-100 disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
