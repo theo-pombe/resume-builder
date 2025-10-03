@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../hooks/useAuth";
 import ProfileAccountModal from "./ProfileAccountModal";
+import { getInitials } from "../utilities/textFormat";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0";
@@ -89,14 +90,6 @@ function UserProfileMenu() {
     };
   }, []);
 
-  const getInitials = (name?: string) => {
-    if (!name) return "U";
-    const parts = name.split(" ");
-    return parts.length > 1
-      ? parts[0][0].toUpperCase() + parts[1][0].toUpperCase()
-      : name[0].toUpperCase();
-  };
-
   return (
     <div className="relative" ref={menuRef}>
       <div>
@@ -114,7 +107,7 @@ function UserProfileMenu() {
                 className="rounded-full object-cover w-10 h-10"
               />
             ) : (
-              <div className="rounded-full bg-gray-200 hover:bg-gray-300 transition text-gray-600 font-bold w-10 h-10">
+              <div className="rounded-full bg-gray-200 hover:bg-gray-300 transition text-gray-600 font-bold w-10 h-10 flex items-center justify-center">
                 {getInitials(user?.username)}
               </div>
             )}
