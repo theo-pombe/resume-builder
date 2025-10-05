@@ -39,7 +39,7 @@ class ResumesController {
     return res.status(201).json({
       success: true,
       message: "Resume created successfully",
-      data: resume
+      data: resume,
     });
   };
 
@@ -154,8 +154,10 @@ class ResumesController {
     if (!resume) return resume;
     const obj = resume.toJSON ? resume.toJSON() : resume;
 
-    if (obj.avatar) {
-      obj.avatar = `${req.protocol}://${req.get("host")}/uploads/${obj.avatar}`;
+    if (obj.displayAvatar) {
+      obj.displayAvatar = `${req.protocol}://${req.get("host")}/uploads/${
+        obj.displayAvatar
+      }`;
     }
     return obj;
   }

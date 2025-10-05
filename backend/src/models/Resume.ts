@@ -12,6 +12,7 @@ export interface IResume extends Document {
   title: string;
   summary: string;
   avatar?: string;
+  displayAvatar?: string;
   declaration: IDeclaration;
   isActive: boolean;
   createdAt: Date;
