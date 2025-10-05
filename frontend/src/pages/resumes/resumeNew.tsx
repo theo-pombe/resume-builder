@@ -56,7 +56,6 @@ const ResumeNew = () => {
             title: "",
             summary: "",
             avatar: user?.avatar,
-            declaration: { statement: "", signature: "", date: "" },
           }}
           onSubmit={createResume}
           isUpdate={false}

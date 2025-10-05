@@ -69,9 +69,9 @@ const ResumeForm: React.FC<ResumeFormProps> = ({
     avatarFile: null,
     avatarPreview: initialValues?.avatar || "",
     declaration: {
-      statement: initialValues?.declaration?.statement || "",
-      signature: initialValues?.declaration?.signature || "",
-      date: initialValues?.declaration?.date || "",
+      statement: initialValues?.declaration?.statement || undefined,
+      signature: initialValues?.declaration?.signature || undefined,
+      date: initialValues?.declaration?.date || undefined,
     },
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
