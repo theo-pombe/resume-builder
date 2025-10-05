@@ -80,10 +80,11 @@ const Users = () => {
             <tr>
               <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Username</th>
-              <th className="py-2 px-4">Total Resume</th>
+              <th className="py-2 px-4">Resumes</th>
               <th className="py-2 px-4">Email</th>
               <th className="py-2 px-4">Role</th>
               <th className="py-2 px-4">Status</th>
+              <th className="py-2 px-4 text-nowrap">Updated At</th>
             </tr>
           </thead>
 
@@ -170,6 +171,9 @@ const Users = () => {
                     >
                       {user.isActive ? "Active" : "Inactive"}
                     </span>
+                  </td>
+                  <td className="py-2 px-4 text-nowrap text-gray-700">
+                    {new Date(user.updatedAt).toLocaleDateString()}
                   </td>
                 </tr>
               ))

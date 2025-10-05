@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useParams, useNavigate } from "react-router";
 import Spinner from "../../../components/ui/Spinner";
 import UserForm from "../../../features/users/UserForm";
@@ -7,6 +8,7 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/admin";
 
 const Userdetails = () => {
+  const { t } = useTranslation();
   const { username } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState<any>();
@@ -122,11 +124,16 @@ const Userdetails = () => {
 
       <div className="basis-1/3 p-8 bg-gray-50">
         <h2 className="border-b pb-1 text-lg font-semibold">Resumes</h2>
+
         {user.resumes.length > 0 ? (
-          <ul>
+          <ul className="space-y-2">
             {user.resumes.map((u: any) => (
-              <li key={u.id}>
-                {u.title} - {u.createdAt}
+              <li key={u.id} className="space-x-2 list-decimal list-inside">
+                <span> {t(u.title)}</span>
+                <span>-</span>
+                <span>
+                  {new Date(u.updatedAt ?? u.createdAt).toLocaleDateString()}
+                </span>
               </li>
             ))}
           </ul>
