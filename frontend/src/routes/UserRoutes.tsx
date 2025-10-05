@@ -67,6 +67,8 @@ const UserRoutes = () => {
         <Route path="work-experiences" element={<WorkExperiences />} />
         <Route path="skills" element={<Skills />} />
         <Route path="referees" element={<Referees />} />
+
+        <Route path="preview" element={<Preview />} />
       </Route>
 
       <Route path="templates">

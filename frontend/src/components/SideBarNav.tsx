@@ -26,6 +26,7 @@ const SideBarNav = () => {
     { label: t("work_experiences"), to: "work-experiences" },
     { label: t("skills"), to: "skills" },
     { label: t("referees"), to: "referees" },
+    { label: t("preview_and_export"), to: "preview" },
   ];
 
   return (
