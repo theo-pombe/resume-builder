@@ -9,7 +9,15 @@ import ResumeLayout from "../layouts/ResumeLayout";
 import Templates from "../pages/templates/templates";
 import Resume from "../pages/resumes/resume";
 import Template from "../pages/templates/template";
-import ResumeNew from "../pages/resumes/resumenew";
+import ResumeNew from "../pages/resumes/resumeNew";
+import WorkExperiences from "../pages/sections/WorkExperiences";
+import Projects from "../pages/sections/projects";
+import PersonalInfo from "../pages/sections/PersonalInfo";
+import SchoolQualifications from "../pages/sections/SchoolQualifications";
+import AcademicQualifications from "../pages/sections/AcademicQualifications";
+import Skills from "../pages/sections/skills";
+import Preview from "../pages/resumes/Preview";
+import Referees from "../pages/sections/Referees";
 
 const UserRoutes = () => {
   return (
@@ -43,6 +51,22 @@ const UserRoutes = () => {
         }
       >
         <Route index element={<Resume />} />
+
+        <Route path="personal-information" element={<PersonalInfo />} />
+
+        <Route
+          path="school-qualifications"
+          element={<SchoolQualifications />}
+        />
+        <Route
+          path="academic-qualifications"
+          element={<AcademicQualifications />}
+        />
+
+        <Route path="projects" element={<Projects />} />
+        <Route path="work-experiences" element={<WorkExperiences />} />
+        <Route path="skills" element={<Skills />} />
+        <Route path="referees" element={<Referees />} />
       </Route>
 
       <Route path="templates">

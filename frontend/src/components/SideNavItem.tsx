@@ -38,6 +38,7 @@ const SideNavItem = ({ item }: SideNavItemProps) => {
     <li>
       <NavLink
         to={item.to!}
+        end
         className={({ isActive }) =>
           `block px-2 py-2 rounded text-sm text-nowrap ${
             isActive
