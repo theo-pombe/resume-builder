@@ -92,18 +92,20 @@ const Resumes = () => {
           </thead>
 
           <tbody>
-            {resumes.length > 0 ? (
-              resumes.map((resume, i) => {
+            {paginatedItems.length > 0 ? (
+              paginatedItems.map((resume, i) => {
                 return (
                   <tr
-                    key={i}
+                    key={startIndex + i + 1}
                     className="odd:bg-white even:bg-gray-50 border-b hover:bg-gray-100 transition-colors"
                   >
-                    <td className="py-2 px-4 text-center">{i + 1}</td>
+                    <td className="py-2 px-4 text-center">
+                      {startIndex + i + 1}
+                    </td>
                     <td className="py-2 px-4">
                       <a
                         href={`/admin/resumes/${resume._id}`}
-                        className="font-medium text-gray-900"
+                        className="font-medium text-gray-900 text-nowrap"
                       >
                         {t(`${resume.title}`)}
                       </a>
@@ -132,7 +134,7 @@ const Resumes = () => {
                       </a>
                     </td>
                     <td className="py-2 px-4 text-gray-700">
-                      <p className="line-clamp-1 max-w-xl">{resume.summary}</p>
+                      <p className="line-clamp-1 max-w-lg">{resume.summary}</p>
                     </td>
                     <td className="py-2 px-4 text-gray-700">
                       <span

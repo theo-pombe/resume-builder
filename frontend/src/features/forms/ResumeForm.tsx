@@ -56,6 +56,11 @@ interface FormDataState {
   declaration: Declaration;
 }
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0";
+
+const BASE_URL_UPLOAD = API_BASE_URL.replace("/api/v0", "/uploads");
+
 const ResumeForm: React.FC<ResumeFormProps> = ({
   initialValues,
   onSubmit,
@@ -205,11 +210,10 @@ const ResumeForm: React.FC<ResumeFormProps> = ({
         {formDataState.avatarPreview && (
           <img
             src={
-              formDataState.avatarPreview
-                ? formDataState.avatarPreview.startsWith("http")
-                  ? formDataState.avatarPreview
-                  : `http://localhost:8080/uploads/${formDataState.avatarPreview}`
-                : ""
+              formDataState.avatarPreview.startsWith("http") ||
+              formDataState.avatarPreview.startsWith("blob:")
+                ? formDataState.avatarPreview
+                : `${BASE_URL_UPLOAD}/${formDataState.avatarPreview}`
             }
             alt="Avatar Preview"
             className="w-24 h-24 mt-2 rounded-full object-cover"
