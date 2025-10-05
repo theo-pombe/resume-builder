@@ -37,10 +37,6 @@ const Userdetails = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -104,8 +100,25 @@ const Userdetails = () => {
     }
   };
 
-  if (loading) return <Spinner />;
-  if (!user) return <div>User not found</div>;
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (!loading && !user) navigate("/admin/users");
+  }, [loading, user, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-[90vh] flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="bg-white shadow-md rounded-lg flex justify-between gap-8 min-h-[70vh]">
