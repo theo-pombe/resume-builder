@@ -7,15 +7,16 @@ import { Link } from "react-router";
 import { useAuth } from "../../hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { getInitials } from "../../utilities/textFormat";
+import type { ResumeType } from "app-resume";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/resumes";
 
-const ResumeItem = ({ resume, t }: { resume: any; t: any }) => (
+const ResumeItem = ({ resume, t }: { resume: ResumeType; t: any }) => (
   <div className="flex items-center space-x-4 p-4 border border-gray-400 rounded-md mb-4 min-h-48 hover:shadow-sm transition-shadow">
-    {resume.avatar ? (
+    {resume.displayAvatar ? (
       <img
-        src={resume.avatar}
+        src={resume.displayAvatar}
         alt={resume.title}
         className="rounded-full object-cover w-16 h-16"
       />
@@ -32,10 +33,10 @@ const ResumeItem = ({ resume, t }: { resume: any; t: any }) => (
 );
 
 const Resumes = () => {
-  const [resumes, setResumes] = useState<any[]>([]);
+  const [resumes, setResumes] = useState<ResumeType[]>([]);
   const [alert, setAlert] = useState<AlertType>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const dropdownRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -48,7 +49,7 @@ const Resumes = () => {
       ref?.contains(event.target as Node)
     );
     if (!clickedInside) {
-      setDropdownOpen(false);
+      setDropdownOpen(null);
     }
   };
 
@@ -161,31 +162,38 @@ const Resumes = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {resumes.map((r) => (
             <div
-              key={r._id}
+              key={r.id}
               className="bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition"
             >
               <ResumeItem resume={r} t={t} />
               <div className="mt-3 flex justify-between items-center">
                 <p className="text-gray-500 text-sm">
-                  Last updated: {new Date(r.updatedAt).toLocaleDateString()}
+                  Last updated:{" "}
+                  {r.updatedAt
+                    ? new Date(r.updatedAt).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      })
+                    : ""}
                 </p>
 
                 <div
                   className="relative"
                   ref={(el: HTMLDivElement | null) => {
-                    dropdownRefs.current[r._id] = el;
+                    dropdownRefs.current[r.id] = el;
                   }}
                 >
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setDropdownOpen(dropdownOpen === r._id ? null : r._id);
+                      setDropdownOpen(dropdownOpen === r.id ? null : r.id);
                     }}
                   >
                     <MoreVertical />
                   </button>
-                  {dropdownOpen === r._id && (
+                  {dropdownOpen === r.id && (
                     <div className="absolute right-0 mt-2 w-28 bg-white shadow z-10">
                       <Link
                         to={`/resumes/${r.id}`}
@@ -195,7 +203,7 @@ const Resumes = () => {
                         View
                       </Link>
                       <button
-                        onClick={() => deleteResume(r._id)}
+                        onClick={() => deleteResume(r.id)}
                         className="flex items-center gap-x-2 w-full text-left px-3 text-sm py-1.5 cursor-pointer hover:bg-gray-100 text-red-600"
                       >
                         <X size={17} /> Delete

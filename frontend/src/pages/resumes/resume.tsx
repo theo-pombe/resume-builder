@@ -8,6 +8,8 @@ import { useNavigate, useParams } from "react-router";
 import SectionDivider from "../../components/ui/SectionDivider";
 import { useAuth } from "../../hooks/useAuth";
 import ResumeForm from "../../features/forms/ResumeForm";
+import type { ResumeType } from "app-resume";
+import { getInitials } from "../../utilities/textFormat";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/resumes";
@@ -15,7 +17,7 @@ const API_BASE_URL =
 const Resume = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [resume, setResume] = useState<any>();
+  const [resume, setResume] = useState<ResumeType>();
   const [loading, setLoading] = useState<boolean>(true);
   const [alert, setAlert] = useState<AlertType>();
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -56,10 +58,10 @@ const Resume = () => {
   }
 
   async function handleUpdate(formData: FormData): Promise<void> {
-    if (!resume?._id) return;
+    if (!resume?.id) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/${resume._id}`, {
-        method: "PUT",
+      const res = await fetch(`${API_BASE_URL}/${resume.id}`, {
+        method: "PATCH",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
@@ -116,22 +118,26 @@ const Resume = () => {
           initialValues={{
             title: resume?.title,
             summary: resume?.summary,
-            avatar: resume?.avatar, // backend avatar URL
+            avatar: resume?.displayAvatar, // backend avatar URL
             declaration: resume?.declaration,
           }}
           onSubmit={handleUpdate}
-          isUpdate={!!resume?._id}
+          isUpdate={!!resume?.id}
           setIsEditing={setIsEditing}
         />
       ) : (
         <div className="flex gap-6 flex-wrap flex-col justify-between min-h-[57vh]">
           <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200 hover:shadow-lg transition-shadow duration-200 space-y-4">
-            {resume.avatar && (
+            {resume.displayAvatar ? (
               <img
-                src={resume.avatar}
+                src={resume.displayAvatar}
                 alt="Resume Avatar"
                 className="w-24 h-24 mt-4 rounded-full object-cover"
               />
+            ) : (
+              <div className="rounded-full bg-gray-200 hover:bg-gray-300 transition text-gray-600 font-bold w-16 h-16 flex items-center justify-center">
+                {getInitials(resume.title)}
+              </div>
             )}
             <h2 className="text-2xl font-bold text-gray-800">
               {t(`${resume.title}`)}

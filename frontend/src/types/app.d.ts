@@ -2,3 +2,4 @@
 
 /// <reference path="./app-auth.d.ts" />
 /// <reference path="./app-ui.d.ts" />
+/// <reference path="./app-resume.d.ts" />
