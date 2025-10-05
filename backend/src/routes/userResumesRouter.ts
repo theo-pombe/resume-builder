@@ -23,6 +23,7 @@ userResumesRouter
   .get("/:id", tryCatch(new ResumesController().getResume, "getResume"))
   .patch(
     "/:id",
+    upload.single("avatar"),
     normalizeResumeBody,
     validate({ body: updateResumeBodySchema }),
     tryCatch(new ResumesController().updateResume, "updateResume")

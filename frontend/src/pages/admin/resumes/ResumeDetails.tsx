@@ -10,6 +10,7 @@ import TextArea from "../../../components/form/TextArea";
 import Select from "../../../components/form/Select";
 import type { UserType } from "app-auth";
 import type { ResumeType } from "app-resume";
+import { getInitials } from "../../../utilities/textFormat";
 
 export const jobTitles = [
   "house_painter",
@@ -153,6 +154,53 @@ const ResumeDetails = () => {
     }
   };
 
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (!formData.title || !formData.summary) {
+      alert(t("title_and_summary_required"));
+      setLoading(false);
+      return;
+    }
+    try {
+      const payload = new FormData();
+
+      if (changes.title) payload.append("title", changes.title);
+      if (changes.summary) payload.append("summary", changes.summary);
+      if (changes.avatarFile) payload.append("avatar", changes.avatarFile);
+
+      if (
+        changes.declaration &&
+        typeof changes.declaration === "object" &&
+        Object.keys(changes.declaration).length > 0
+      )
+        payload.append("declaration", JSON.stringify(changes.declaration));
+
+      const res = await fetch(`${API_BASE_URL}/resumes/${id}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: payload,
+      });
+
+      const result = await res.json();
+      if (!result.success) {
+        alert(result.message || "Failed to update resume");
+        return;
+      }
+
+      setChanges({});
+
+      navigate("/admin/resumes");
+    } catch (error) {
+      console.error("❌ Failed to update resume", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDelete = async () => {
     if (!confirm(t("confirm_delete_resume"))) return;
 
@@ -206,7 +254,7 @@ const ResumeDetails = () => {
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">Edit Resume</h2>
 
-      <form className="pb-6 space-y-5">
+      <form onSubmit={handleUpdate} className="pb-6 space-y-5">
         <div className="flex flex-col gap-1 lg:max-w-sm">
           <Label text="User" htmlFor="user" />
           <input
@@ -254,7 +302,7 @@ const ResumeDetails = () => {
             className="border rounded p-2"
           />
 
-          {formData.avatarPreview && (
+          {formData.avatarPreview ? (
             <img
               src={
                 formData.avatarPreview.startsWith("http") ||
@@ -263,8 +311,12 @@ const ResumeDetails = () => {
                   : `${BASE_URL_UPLOAD}/${formData.avatarPreview}`
               }
               alt="Avatar Preview"
-              className="w-24 h-24 mt-2 rounded-full object-cover"
+              className="w-24 h-24 mt-4 rounded-full object-cover"
             />
+          ) : (
+            <div className="rounded-full bg-gray-200 hover:bg-gray-300 transition text-5xl text-gray-600 font-bold w-24 h-24 flex items-center justify-center">
+              {getInitials(resume.title)}
+            </div>
           )}
         </div>
 

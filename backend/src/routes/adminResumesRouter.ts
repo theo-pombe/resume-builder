@@ -4,6 +4,7 @@ import tryCatch from "../utils/tryCatch.js";
 import upload from "../utils/upload.js";
 import validate from "../middlewares/validate.js";
 import { updateResumeBodySchema } from "../schema/resumeValidation.js";
+import { normalizeResumeBody } from "../middlewares/nomalize.js";
 
 const adminResumesRouter = Router();
 
@@ -13,6 +14,7 @@ adminResumesRouter
   .patch(
     "/:id",
     upload.single("avatar"),
+    normalizeResumeBody,
     validate({ body: updateResumeBodySchema }),
     tryCatch(new ResumesController().updateResume, "updateResume")
   )

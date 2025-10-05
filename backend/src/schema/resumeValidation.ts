@@ -40,4 +40,4 @@ export const updateResumeBodySchema = Joi.object({
     "string.base": "Summary must be a text.",
   }),
   declaration: declarationSchema.optional(),
-});
+}).optional();
