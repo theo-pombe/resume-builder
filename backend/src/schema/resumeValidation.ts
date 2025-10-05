@@ -8,13 +8,7 @@ const declarationSchema = Joi.object({
   signature: Joi.string().trim().allow("").messages({
     "string.base": "Signature must be a text.",
   }),
-  date: Joi.string()
-    .trim()
-    .pattern(/^([0-2][0-9]|3[0-1])\/(0[1-9]|1[0-2])\/\d{4}$/)
-    .allow("")
-    .messages({
-      "string.pattern.base": "Date must be in DD/MM/YYYY format.",
-    }),
+  date: Joi.date().allow(null),
 });
 
 // CREATE schema

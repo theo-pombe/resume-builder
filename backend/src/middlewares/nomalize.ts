@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 
 // Middleware to normalize multipart/form-data to JSON
-export const normalizeUpdateUserBody = (
+export const normalizeUserBody = (
   req: Request,
   _res: Response,
   next: NextFunction
@@ -40,7 +40,17 @@ export const normalizeResumeBody = (
   for (const [key, value] of Object.entries(req.body)) {
     if (key === "declaration" && typeof value === "string") {
       try {
-        normalizedBody.declaration = JSON.parse(value);
+        const declaration = JSON.parse(value);
+
+        if (declaration.date) {
+          const parsedDate = new Date(declaration.date);
+          if (isNaN(parsedDate.getTime())) {
+            return res.status(400).json({ error: "Invalid declaration date" });
+          }
+          declaration.date = parsedDate;
+        }
+
+        normalizedBody.declaration = declaration;
       } catch {
         return res.status(400).json({ error: "Invalid declaration format" });
       }

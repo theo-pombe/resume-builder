@@ -4,7 +4,7 @@ import validate from "../middlewares/validate.js";
 import UsersController from "../controllers/usersController.js";
 import { EditUserBodySchema } from "../schema/usersValidation.js";
 import upload from "../utils/upload.js";
-import { normalizeUpdateUserBody } from "../middlewares/nomalize.js";
+import { normalizeUserBody } from "../middlewares/nomalize.js";
 
 const usersRouter = Router();
 
@@ -14,7 +14,7 @@ usersRouter
   .patch(
     "/:username",
     upload.single("avatar"),
-    normalizeUpdateUserBody,
+    normalizeUserBody,
     validate({ body: EditUserBodySchema }),
     tryCatch(new UsersController().updateUser, "updateUser")
   )
