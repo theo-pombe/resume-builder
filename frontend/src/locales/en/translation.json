@@ -14,6 +14,8 @@
   "open_main_menu": "Open main menu",
   "logout": "Logout",
 
+  "confirm_delete_resume": "Are you sure you want to delete this resume?",
+
   "action": "Action",
 
   "minimal": "Minimal",
