@@ -4,6 +4,6 @@ import adminResumesRouter from "./adminResumesRouter.js";
 
 const adminRouter = Router();
 
-adminRouter.use("/users", usersRouter).use("resumes", adminResumesRouter);
+adminRouter.use("/users", usersRouter).use("/resumes", adminResumesRouter);
 
 export default adminRouter;

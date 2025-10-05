@@ -45,7 +45,7 @@ class ResumesController {
 
   getResumes = async (req: Request, res: Response) => {
     const resumes = await Resume.find({ deletedAt: null })
-      .populate("user", "username email avatar")
+      .populate("user", "username email avatar createdAt updatedAt")
       .sort({ createdAt: -1 });
 
     return res.json({

@@ -20,6 +20,8 @@ class UsersController {
         avatar: userObj.avatar ? `${host}/uploads/${userObj.avatar}` : null, // full URL for avatar
         totalResume: userObj.resumes?.length,
         isActive: userObj.isActive,
+        createdAt: userObj.createdAt,
+        updatedAt: userObj.updatedAt,
       };
     });
 
@@ -35,7 +37,7 @@ class UsersController {
 
     const user = await User.findOne({ username, deletedAt: null }).populate(
       "resumes",
-      "id title createdAt"
+      "id title createdAt updatedAt"
     );
 
     if (!user) throw new NotFoundError("User not found");
