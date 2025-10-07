@@ -9,7 +9,7 @@ const Referees = () => {
     <div className="relative p-6">
       <SectionHeader title={t("referees")} />
 
-      <SectionDivider title={t("new_referee")} />
+      <SectionDivider title={t("referees")} />
     </div>
   );
 };

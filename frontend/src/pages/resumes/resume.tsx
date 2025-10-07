@@ -111,7 +111,9 @@ const Resume = () => {
         {t("welcome", { username: user?.username || "" })}
       </h1>
 
-      <SectionDivider title={t("resume_summary")} />
+      <SectionDivider
+        title={isEditing ? t("edit_resume") : t("resume_summary")}
+      />
 
       {isEditing ? (
         <ResumeForm

@@ -9,7 +9,7 @@ const Skills = () => {
     <div className="relative p-6">
       <SectionHeader title={t("skills")} mandatory={false} />
 
-      <SectionDivider title={t("new_skill")} />
+      <SectionDivider title={t("skills")} />
     </div>
   );
 };
