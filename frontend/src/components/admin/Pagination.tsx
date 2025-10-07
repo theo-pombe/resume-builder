@@ -47,7 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
   const pages = getPageNumbers();
 
   return (
-    <div className="absolute w-full bottom-0">
+    <div className="absolute w-full bottom-4">
       <div className="flex justify-between items-center">
         <div className="flex justify-between items-center text-sm text-gray-600">
           <p>

@@ -105,9 +105,22 @@ const Resumes = () => {
                     <td className="py-2 px-4">
                       <a
                         href={`/admin/resumes/${resume._id}`}
-                        className="font-medium text-gray-900 text-nowrap"
+                        className="flex items-center gap-2 font-medium text-gray-900 text-nowrap"
                       >
-                        {t(`${resume.title}`)}
+                        {resume.displayAvatar ? (
+                          <img
+                            src={resume.displayAvatar}
+                            alt={resume.title}
+                            className="w-7 h-7 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-7 h-7 rounded-full bg-gray-300 flex items-center justify-center">
+                            <span className="text-sm font-semibold text-gray-700">
+                              {resume.title.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                        <span> {t(`${resume.title}`)}</span>
                       </a>
                     </td>
                     <td className="py-2 px-4">
