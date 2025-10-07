@@ -97,7 +97,7 @@ const Resumes = () => {
                 return (
                   <tr
                     key={startIndex + i + 1}
-                    className="odd:bg-white even:bg-gray-50 border-b hover:bg-gray-100 transition-colors"
+                    className="odd:bg-white even:bg-gray-50 border-b border-gray-300 hover:bg-gray-100 transition-colors"
                   >
                     <td className="py-2 px-4 text-center">
                       {startIndex + i + 1}
@@ -184,6 +184,7 @@ const Resumes = () => {
         totalItems={filtered.length}
         totalPaginatedItems={paginatedItems.length}
         startIndex={startIndex}
+        context="Resumes"
       />
     </div>
   );

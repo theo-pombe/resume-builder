@@ -5,6 +5,7 @@ type PaginationProps = {
   startIndex: number;
   totalPaginatedItems: number;
   onPageChange: (page: number) => void;
+  context: string;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -14,6 +15,7 @@ const Pagination: React.FC<PaginationProps> = ({
   startIndex,
   totalPaginatedItems,
   onPageChange,
+  context,
 }) => {
   if (totalPages <= 1) return null;
 
@@ -51,8 +53,9 @@ const Pagination: React.FC<PaginationProps> = ({
       <div className="flex justify-between items-center">
         <div className="flex justify-between items-center text-sm text-gray-600">
           <p>
-            Showing {startIndex + 1}–{startIndex + totalPaginatedItems} of{" "}
-            {totalItems} users
+            Showing {startIndex + 1}
+            {" – "}
+            {startIndex + totalPaginatedItems} of {totalItems} {context}
           </p>
         </div>
 

@@ -93,7 +93,7 @@ const Users = () => {
               paginatedItems.map((user, i) => (
                 <tr
                   key={user.username}
-                  className="odd:bg-white even:bg-gray-50 border-b hover:bg-gray-100 transition-colors"
+                  className="odd:bg-white even:bg-gray-50 border-b border-gray-300 hover:bg-gray-100 transition-colors"
                 >
                   <td className="py-2 px-4">{startIndex + i + 1}</td>
                   <td className="py-2 px-4">
@@ -194,7 +194,7 @@ const Users = () => {
         onPageChange={setCurrentPage}
         totalItems={filtered.length}
         totalPaginatedItems={paginatedItems.length}
-        startIndex={startIndex}
+        startIndex={startIndex} context="Users"
       />
     </div>
   );
