@@ -105,10 +105,10 @@ const Users = () => {
                         <img
                           src={user.avatar}
                           alt={user.username}
-                          className="w-8 h-8 rounded-full object-cover"
+                          className="w-7 h-7 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-gray-300 flex items-center justify-center">
                           <span className="text-sm font-semibold text-gray-700">
                             {user.username.charAt(0).toUpperCase()}
                           </span>
