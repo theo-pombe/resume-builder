@@ -1,6 +1,7 @@
 import { FileText, LayoutDashboard, PanelTop, Users } from "lucide-react";
 import Logo from "../../components/ui/Logo";
 import { NavLink } from "react-router";
+import ResumeSectionsMenu from "../../components/admin/ResumeSectionsMenu";
 
 const AdminSidebar = () => {
   return (
@@ -33,7 +34,7 @@ const AdminSidebar = () => {
           Resumes
         </NavLink>
 
-        {/* ResumeSectionsMenu */}
+        <ResumeSectionsMenu />
 
         <NavLink
           to="/admin/templates"
