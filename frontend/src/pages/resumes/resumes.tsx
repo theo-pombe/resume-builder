@@ -8,12 +8,10 @@ import { useAuth } from "../../hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { getInitials } from "../../utilities/textFormat";
 import type { ResumeType } from "app-resume";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/resumes";
+import { deleteResume, getResumes } from "../../services/resumesService";
 
 const ResumeItem = ({ resume, t }: { resume: ResumeType; t: any }) => (
-  <div className="flex items-center space-x-4 p-4 border border-gray-400 rounded-md mb-4 min-h-48 hover:shadow-sm transition-shadow">
+  <div className="flex space-x-4 p-4 border border-gray-300 rounded-md mb-4 hover:shadow-sm transition-shadow">
     {resume.displayAvatar ? (
       <img
         src={resume.displayAvatar}
@@ -27,7 +25,7 @@ const ResumeItem = ({ resume, t }: { resume: ResumeType; t: any }) => (
     )}
     <div className="flex-1">
       <p className="font-semibold capitalize">{t(`${resume.title}`)}</p>
-      <p className="text-gray-500 text-sm">{resume.summary}</p>
+      <p className="text-gray-500 line-clamp-4 text-sm">{resume.summary}</p>
     </div>
   </div>
 );
@@ -56,22 +54,17 @@ const Resumes = () => {
   const fetchResumes = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { success, messages, resumes: all } = await getResumes();
 
-      const result = await res.json();
-
-      if (!res.ok) {
-        setAlert({
-          success: false,
-          messages: [result.message || "Failed to fetch resumes"],
-        });
+      if (!success) {
         setResumes([]);
-      } else {
-        setResumes(result.data);
+        return setAlert({
+          success: false,
+          messages: [...(messages || "Failed to fetch resumes")],
+        });
       }
+
+      if (all) setResumes(all);
     } catch (error: any) {
       setAlert({
         success: false,
@@ -83,26 +76,21 @@ const Resumes = () => {
     }
   };
 
-  const deleteResume = async (id: string) => {
+  const handleDelete = async (id: string) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { success, messages } = await deleteResume(id);
 
-      const result = await res.json();
-
-      if (!result.success) {
+      if (!success) {
         return setAlert({
           success: false,
-          messages: [result.message || "Failed to delete resume"],
+          messages: [...(messages || "Failed to delete resume")],
         });
       }
 
       setAlert({
-        success: true,
-        messages: ["Resume deleted successfully"],
+        success,
+        messages: [...(messages || "Resume deleted successfully")],
       });
 
       fetchResumes();
@@ -163,10 +151,10 @@ const Resumes = () => {
           {resumes.map((r) => (
             <div
               key={r.id}
-              className="bg-white rounded-lg shadow-sm p-5 hover:shadow-md transition"
+              className="bg-white rounded-lg shadow-sm p-5 pt-3 hover:shadow-md transition"
             >
               <ResumeItem resume={r} t={t} />
-              <div className="mt-3 flex justify-between items-center">
+              <div className="flex justify-between items-center">
                 <p className="text-gray-500 text-sm">
                   Last updated:{" "}
                   {r.updatedAt
@@ -194,7 +182,7 @@ const Resumes = () => {
                     <MoreVertical />
                   </button>
                   {dropdownOpen === r.id && (
-                    <div className="absolute right-0 mt-2 w-28 bg-white shadow z-10">
+                    <div className="absolute right-0 w-28 bg-white shadow z-10">
                       <Link
                         to={`/resumes/${r.id}`}
                         className="flex items-center gap-x-2 w-full text-left px-3 text-sm py-1.5 hover:bg-gray-100"
@@ -203,7 +191,7 @@ const Resumes = () => {
                         View
                       </Link>
                       <button
-                        onClick={() => deleteResume(r.id)}
+                        onClick={() => handleDelete(r.id)}
                         className="flex items-center gap-x-2 w-full text-left px-3 text-sm py-1.5 cursor-pointer hover:bg-gray-100 text-red-600"
                       >
                         <X size={17} /> Delete

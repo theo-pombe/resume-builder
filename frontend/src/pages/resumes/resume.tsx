@@ -10,9 +10,7 @@ import { useAuth } from "../../hooks/useAuth";
 import ResumeForm from "../../features/forms/ResumeForm";
 import type { ResumeType } from "app-resume";
 import { getInitials } from "../../utilities/textFormat";
-
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/resumes";
+import { getResume, updateResume } from "../../services/resumesService";
 
 const Resume = () => {
   const { t } = useTranslation();
@@ -28,23 +26,20 @@ const Resume = () => {
   if (!token) throw new Error("Token is required");
 
   async function fetchResume() {
+    if (!id) return;
+
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/${id}`, {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { success, messages, resume } = await getResume(id);
 
-      const result = await res.json();
-
-      if (!res.ok) {
+      if (!success) {
         setAlert({
           success: false,
-          messages: [result.message || "Failed to fetch resumes"],
+          messages: [...(messages || "Failed to fetch resumes")],
         });
         setResume(undefined);
       } else {
-        setResume(result.data);
+        setResume(resume);
       }
     } catch (error: any) {
       setAlert({
@@ -58,22 +53,25 @@ const Resume = () => {
   }
 
   async function handleUpdate(formData: FormData): Promise<void> {
-    if (!resume?.id) return;
+    if (!resume?.id)
+      return setAlert({ success: false, messages: ["Invalid Resume ID"] });
+
+    setLoading(true);
     try {
-      const res = await fetch(`${API_BASE_URL}/${resume.id}`, {
-        method: "PATCH",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-      const result = await res.json();
-      if (!res.ok) {
-        setAlert({ success: false, messages: [result.message] });
-      } else {
-        setResume(result.data);
-        setIsEditing(false);
-      }
+      const {
+        success,
+        messages,
+        resume: updatedResume,
+      } = await updateResume(resume.id, formData);
+
+      if (!success) return setAlert({ success: false, messages });
+
+      setResume(updatedResume);
+      setIsEditing(false);
     } catch (err: any) {
       setAlert({ success: false, messages: [err.message] });
+    } finally {
+      setLoading(false);
     }
   }
 
