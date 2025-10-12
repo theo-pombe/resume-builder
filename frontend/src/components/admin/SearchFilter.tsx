@@ -16,7 +16,7 @@ export default function SearchFilter({
   placeholder = "Search...",
 }: SearchFilterProps) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center w-full my-6 bg-white">
+    <div className="flex flex-col sm:flex-row sm:items-center w-full my-4 bg-white">
       {/* Search input */}
       <div className="relative flex-1">
         <input

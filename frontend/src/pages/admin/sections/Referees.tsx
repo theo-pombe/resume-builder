@@ -1,7 +1,7 @@
 const Referees = () => {
   return (
-    <div className="overflow-x-auto pb-5">
-      <h2 className="text-2xl font-semibold text-cyan-800">Referees</h2>
+    <div className="relative min-h-[84vh]">
+      <h2 className="text-xl font-semibold text-cyan-800">Referees</h2>
     </div>
   );
 };

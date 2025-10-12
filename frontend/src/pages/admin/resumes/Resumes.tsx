@@ -3,13 +3,14 @@ import { useTranslation } from "react-i18next";
 import Spinner from "../../../components/ui/Spinner";
 import SearchFilter from "../../../components/admin/SearchFilter";
 import Pagination from "../../../components/admin/Pagination";
+import type { ResumeType } from "app-resume";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/admin";
 
 const Resumes = () => {
   const { t } = useTranslation();
-  const [resumes, setResumes] = useState<any[]>([]);
+  const [resumes, setResumes] = useState<ResumeType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const [search, setSearch] = useState("");
@@ -64,7 +65,7 @@ const Resumes = () => {
 
   return (
     <div className="relative min-h-[84vh]">
-      <h2 className="text-2xl font-semibold text-cyan-800">Resumes</h2>
+      <h2 className="text-xl font-semibold text-cyan-800">Resumes</h2>
 
       <SearchFilter
         search={search}
@@ -80,7 +81,7 @@ const Resumes = () => {
 
       <div className="overflow-x-auto flex-1">
         <table className="min-w-full table-fixed text-sm text-left text-gray-500">
-          <thead className="text-gray-700 uppercase bg-gray-50">
+          <thead className="text-gray-700 text-xs uppercase bg-gray-50">
             <tr>
               <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Title</th>
@@ -104,17 +105,17 @@ const Resumes = () => {
                     </td>
                     <td className="py-2 px-4">
                       <a
-                        href={`/admin/resumes/${resume._id}`}
+                        href={`/admin/resumes/${resume.id}`}
                         className="flex items-center gap-2 font-medium text-gray-900 text-nowrap"
                       >
                         {resume.displayAvatar ? (
                           <img
                             src={resume.displayAvatar}
                             alt={resume.title}
-                            className="w-7 h-7 rounded-full object-cover"
+                            className="w-6 h-6 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-7 h-7 rounded-full bg-gray-300 flex items-center justify-center">
+                          <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
                             <span className="text-sm font-semibold text-gray-700">
                               {resume.title.charAt(0).toUpperCase()}
                             </span>
@@ -126,7 +127,7 @@ const Resumes = () => {
                     <td className="py-2 px-4">
                       <a
                         href={`/admin/users/${resume.user.username}`}
-                        className="inline-flex items-center gap-2 px-2 py-1 rounded-md text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 truncate"
+                        className="inline-flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 truncate"
                         title={resume.user.username}
                       >
                         <svg
@@ -161,7 +162,8 @@ const Resumes = () => {
                       </span>
                     </td>
                     <td className="py-2 px-4 text-nowrap text-gray-700">
-                      {new Date(resume.updatedAt).toLocaleDateString()}
+                      {resume.updatedAt &&
+                        new Date(resume.updatedAt).toLocaleDateString()}
                     </td>
                   </tr>
                 );

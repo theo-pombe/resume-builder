@@ -51,7 +51,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="absolute w-full bottom-4">
       <div className="flex justify-between items-center">
-        <div className="flex justify-between items-center text-sm text-gray-600">
+        <div className="flex justify-between items-center text-xs text-gray-600">
           <p>
             Showing {startIndex + 1}
             {" – "}
@@ -66,7 +66,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded border text-sm cursor-pointer hover:bg-gray-100 disabled:opacity-50"
+            className="px-2 py-1 rounded border text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-50"
           >
             Prev
           </button>
@@ -77,7 +77,7 @@ const Pagination: React.FC<PaginationProps> = ({
               <button
                 key={idx}
                 onClick={() => onPageChange(page)}
-                className={`px-3 py-1 rounded border text-sm cursor-pointer ${
+                className={`px-2 py-1 rounded border text-xs cursor-pointer ${
                   page === currentPage
                     ? "bg-blue-500 text-white"
                     : "hover:bg-gray-100"
@@ -96,7 +96,7 @@ const Pagination: React.FC<PaginationProps> = ({
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 rounded border text-sm hover:bg-gray-100 disabled:opacity-50"
+            className="px-2 py-1 rounded border text-xs hover:bg-gray-100 disabled:opacity-50"
           >
             Next
           </button>
