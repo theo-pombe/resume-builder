@@ -3,13 +3,16 @@ import { useTranslation } from "react-i18next";
 import Spinner from "../../../components/ui/Spinner";
 import SearchFilter from "../../../components/admin/SearchFilter";
 import Pagination from "../../../components/admin/Pagination";
+import type { UserType } from "app-auth";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/v0/admin";
 
 const Users = () => {
   const { t } = useTranslation();
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<(UserType & { totalResumes: number })[]>(
+    []
+  );
   const [loading, setLoading] = useState<boolean>(true);
 
   const [search, setSearch] = useState("");
@@ -56,11 +59,17 @@ const Users = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
 
-  if (loading) return <Spinner />;
+  if (loading) {
+    return (
+      <div className="min-h-[90vh] flex justify-center items-center">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-[84vh]">
-      <h2 className="text-2xl font-semibold text-cyan-800">Users</h2>
+      <h2 className="text-xl font-semibold text-cyan-800">Users</h2>
 
       <SearchFilter
         search={search}
@@ -76,7 +85,7 @@ const Users = () => {
 
       <div className="overflow-x-auto flex-1">
         <table className="min-w-full table-fixed text-sm text-left text-gray-500">
-          <thead className="text-gray-700 uppercase bg-gray-50">
+          <thead className="text-gray-700 text-xs uppercase bg-gray-50">
             <tr>
               <th className="py-2 px-4"></th>
               <th className="py-2 px-4">Username</th>
@@ -105,10 +114,10 @@ const Users = () => {
                         <img
                           src={user.avatar}
                           alt={user.username}
-                          className="w-7 h-7 rounded-full object-cover"
+                          className="w-6 h-6 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-7 h-7 rounded-full bg-gray-300 flex items-center justify-center">
+                        <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center">
                           <span className="text-sm font-semibold text-gray-700">
                             {user.username.charAt(0).toUpperCase()}
                           </span>
@@ -119,8 +128,8 @@ const Users = () => {
                   </td>
 
                   <td className="py-2 px-4 text-gray-700">
-                    {user.totalResume ? (
-                      <p>{t(`${user.totalResume}`)}</p>
+                    {user.totalResumes ? (
+                      <p>{t(`${user.totalResumes}`)}</p>
                     ) : (
                       <p>{"-"}</p>
                     )}
@@ -128,7 +137,7 @@ const Users = () => {
                   <td className="py-2 px-4 text-gray-700 max-w-xs">
                     <a
                       href={`mailto:${user.email}`}
-                      className="inline-flex items-center gap-2 px-2 py-1 rounded-md text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 truncate"
+                      className="inline-flex items-center gap-2 px-2 py-1 rounded-md text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 truncate"
                       title={user.email}
                     >
                       <svg
@@ -173,7 +182,8 @@ const Users = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 text-nowrap text-gray-700">
-                    {new Date(user.updatedAt).toLocaleDateString()}
+                    {user.updatedAt &&
+                      new Date(user.updatedAt).toLocaleDateString()}
                   </td>
                 </tr>
               ))
@@ -194,7 +204,8 @@ const Users = () => {
         onPageChange={setCurrentPage}
         totalItems={filtered.length}
         totalPaginatedItems={paginatedItems.length}
-        startIndex={startIndex} context="Users"
+        startIndex={startIndex}
+        context="Users"
       />
     </div>
   );

@@ -18,7 +18,7 @@ class UsersController {
         email: userObj.email,
         role: userObj.role,
         avatar: userObj.avatar ? `${host}/uploads/${userObj.avatar}` : null, // full URL for avatar
-        totalResume: userObj.resumes?.length,
+        totalResumes: userObj.resumes?.length,
         isActive: userObj.isActive,
         createdAt: userObj.createdAt,
         updatedAt: userObj.updatedAt,
