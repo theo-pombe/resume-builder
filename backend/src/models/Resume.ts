@@ -62,10 +62,10 @@ ResumeSchema.statics.findActive = function () {
   return this.find({ deletedAt: null });
 };
 
-ResumeSchema.plugin(toJSONPlugin);
-
 ResumeSchema.set("toJSON", { virtuals: true });
 ResumeSchema.set("toObject", { virtuals: true });
+
+ResumeSchema.plugin(toJSONPlugin);
 
 const Resume = model<IResume>("Resume", ResumeSchema);
 

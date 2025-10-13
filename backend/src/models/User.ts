@@ -68,8 +68,6 @@ UserSchema.statics.findActive = function () {
   return this.find({ deletedAt: null });
 };
 
-UserSchema.plugin(toJSONPlugin);
-
 UserSchema.set("toJSON", {
   virtuals: true,
   transform: (_doc, ret: any) => {
@@ -79,6 +77,8 @@ UserSchema.set("toJSON", {
 
 UserSchema.set("toJSON", { virtuals: true });
 UserSchema.set("toObject", { virtuals: true });
+
+UserSchema.plugin(toJSONPlugin);
 
 const User = model<IUser>("User", UserSchema);
 
