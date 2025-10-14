@@ -58,6 +58,13 @@ ResumeSchema.virtual("isActive").get(function () {
   return !this.deletedAt;
 });
 
+ResumeSchema.virtual("personalInfo", {
+  ref: "PersonalInfomation",
+  localField: "_id",
+  foreignField: "resume",
+  justOne: true,
+});
+
 ResumeSchema.statics.findActive = function () {
   return this.find({ deletedAt: null });
 };
