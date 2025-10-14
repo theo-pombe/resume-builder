@@ -11,6 +11,4 @@ declare module "app-resume" {
     createdAt?: Date;
     updatedAt?: Date;
   }
-
-  const [resume, setResume] = useState<ResumeType | null>(null);
 }
