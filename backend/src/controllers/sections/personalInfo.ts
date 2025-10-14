@@ -1,6 +1,24 @@
 import type { Request, Response } from "express";
 import { Resume, PersonalInfo } from "../../models/index.js";
 import { ConflictError, NotFoundError } from "../../utils/apiError.js";
+import type { IPersonalInfo } from "../../models/sections/PersonalInfo.js";
+import type { FilterQuery } from "mongoose";
+
+interface PersonalInfosQuery {
+  page?: string;
+  limit?: string;
+  sort?: string;
+  order?: "asc" | "desc" | string;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+}
+
+const ALLOWED_SORT_FIELDS = new Set(["createdAt", "updatedAt", "fullName"]);
+
+function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 class PersonalInfoController {
   addPersonalInfo = async (req: Request, res: Response) => {
@@ -57,19 +75,67 @@ class PersonalInfoController {
     });
   };
 
-  getPersonalInfos = async (req: Request, res: Response) => {
-    const personalInfos = await PersonalInfo.find(
-      {},
-      "_id fullName gender phone email physicalAddress"
-    )
-      .populate("resume", "_id title")
-      .sort({ updatedAt: -1 })
-      .lean();
+  getPersonalInfos = async (
+    req: Request<{}, {}, {}, PersonalInfosQuery>,
+    res: Response
+  ) => {
+    const {
+      page: pageQ = "1",
+      limit: limitQ = "25",
+      sort: sortQ = "createdAt",
+      order: orderQ = "desc",
+      fullName,
+      email,
+      phone,
+    } = req.query;
+
+    const page = Math.max(Number.parseInt(pageQ || "1", 10) || 1, 1);
+    const limit = Math.min(
+      Math.max(Number.parseInt(limitQ || "25", 10) || 25, 1),
+      100
+    );
+
+    const sortField = ALLOWED_SORT_FIELDS.has(sortQ) ? sortQ : "createdAt";
+    const sortDirection = (orderQ || "desc").toLowerCase().startsWith("asc")
+      ? 1
+      : -1;
+
+    const query: FilterQuery<IPersonalInfo> = {};
+    if (fullName && typeof fullName === "string") {
+      query.fullName = { $regex: escapeRegExp(fullName), $options: "i" } as any;
+    }
+    if (email && typeof email === "string") {
+      query.email = { $regex: escapeRegExp(email), $options: "i" } as any;
+    }
+    if (phone && typeof phone === "string") {
+      query.phone = { $regex: escapeRegExp(phone), $options: "i" } as any;
+    }
+
+    const [total, personalInfos] = await Promise.all([
+      PersonalInfo.countDocuments(query),
+      PersonalInfo.find(
+        query,
+        "_id fullName gender phone email physicalAddress"
+      )
+        .populate("resume", "_id title")
+        .sort({ [sortField]: sortDirection })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+    ]);
+
+    const totalPages = Math.max(Math.ceil(total / limit), 1);
 
     return res.status(200).json({
       success: true,
       message: "Personal information retrieved successfully",
       data: personalInfos,
+      pagination: {
+        total,
+        page,
+        limit,
+        pages: totalPages,
+      },
     });
   };
 
