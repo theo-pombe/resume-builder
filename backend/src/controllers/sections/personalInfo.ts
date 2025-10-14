@@ -56,6 +56,73 @@ class PersonalInfoController {
       data: updatedInfo,
     });
   };
+
+  getPersonalInfos = async (req: Request, res: Response) => {
+    const personalInfos = await PersonalInfo.find(
+      {},
+      "_id fullName gender phone email physicalAddress"
+    )
+      .populate("resume", "_id title")
+      .sort({ updatedAt: -1 })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      message: "Personal information retrieved successfully",
+      data: personalInfos,
+    });
+  };
+
+  getPersonalInfoById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const personalInfo = await PersonalInfo.findById(id).populate({
+      path: "resume",
+      select: "title user",
+      populate: { path: "user", select: "username" },
+    });
+
+    if (!personalInfo)
+      throw new NotFoundError("Personal information not found");
+
+    return res.status(200).json({
+      success: true,
+      message: "Personal information retrieved successfully",
+      data: personalInfo,
+    });
+  };
+
+  editPersonalInfoById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const personalInfo = await PersonalInfo.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!personalInfo)
+      throw new NotFoundError("Personal information not found");
+
+    return res.status(200).json({
+      success: true,
+      message: "Personal information updated successfully",
+      data: personalInfo,
+    });
+  };
+
+  deletePersonalInfoById = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const personalInfo = await PersonalInfo.findByIdAndDelete(id);
+    if (!personalInfo)
+      throw new NotFoundError("Personal information not found");
+
+    return res.status(200).json({
+      success: true,
+      message: "Personal information deleted successfully",
+    });
+  };
 }
 
 export default PersonalInfoController;
