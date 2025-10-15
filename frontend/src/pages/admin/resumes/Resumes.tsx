@@ -61,6 +61,10 @@ const Resumes = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filter]);
+
   if (loading) return <Spinner />;
 
   return (
@@ -97,7 +101,7 @@ const Resumes = () => {
               paginatedItems.map((resume, i) => {
                 return (
                   <tr
-                    key={startIndex + i + 1}
+                    key={resume.id}
                     className="odd:bg-white even:bg-gray-50 border-b border-gray-300 hover:bg-gray-100 transition-colors"
                   >
                     <td className="py-2 px-4 text-center">

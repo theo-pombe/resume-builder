@@ -59,6 +59,10 @@ const Users = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filter]);
+
   if (loading) {
     return (
       <div className="min-h-[90vh] flex justify-center items-center">
