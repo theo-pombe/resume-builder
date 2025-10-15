@@ -1,5 +1,8 @@
 import type { FetchResponseType } from "app-shared";
-import type { PersonalInfoType } from "app-personalinfo";
+import type {
+  PersonalInfoFormDataValues,
+  PersonalInfoType,
+} from "app-personalinfo";
 import api from "../../utilities/api";
 
 export const addPerson = async (resumeId: string, data: any) => {
@@ -17,8 +20,8 @@ export const getPersons = async () => {
     `/admin/personal-informations`
   );
 
-  const { success, message, data } = res.data;
-  return { success, message, persons: data };
+  const { success, message, data: persons } = res.data;
+  return { success, message, persons };
 };
 
 export const getPerson = async (resumeId: string) => {
@@ -26,8 +29,8 @@ export const getPerson = async (resumeId: string) => {
     `/resumes/${resumeId}/personal-information`
   );
 
-  const { success, message, data } = res.data;
-  return { success, message, person: data };
+  const { success, message, data: person } = res.data;
+  return { success, message, person };
 };
 
 export const getPersonById = async (id: string) => {
@@ -35,8 +38,8 @@ export const getPersonById = async (id: string) => {
     `/admin/personal-informations/${id}`
   );
 
-  const { success, message, data } = res.data;
-  return { success, message, person: data };
+  const { success, message, data: person } = res.data;
+  return { success, message, person };
 };
 
 export const editPerson = async (resumeId: string, data: any) => {
@@ -49,13 +52,17 @@ export const editPerson = async (resumeId: string, data: any) => {
   return { success, message, person };
 };
 
-export const editPersonById = async (id: string) => {
+export const editPersonById = async (
+  id: string,
+  data: PersonalInfoFormDataValues
+) => {
   const res = await api.patch<FetchResponseType<PersonalInfoType>>(
-    `/admin/personal-informations/${id}`
+    `/admin/personal-informations/${id}`,
+    data
   );
 
-  const { success, message, data } = res.data;
-  return { success, message, person: data };
+  const { success, message, data: person } = res.data;
+  return { success, message, person };
 };
 
 export const deletePersonById = async (id: string) => {
@@ -63,6 +70,6 @@ export const deletePersonById = async (id: string) => {
     `/admin/personal-informations/${id}`
   );
 
-  const { success, message, data } = res.data;
-  return { success, message, person: data };
+  const { success, message, data: person } = res.data;
+  return { success, message, person };
 };
