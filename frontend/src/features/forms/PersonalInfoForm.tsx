@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ActionButton from "../../components/ui/ActionButton";
-import { Edit, Plus, Save, X } from "lucide-react";
+import { Edit, Loader, Plus, Save, X } from "lucide-react";
 import Select from "../../components/form/Select";
 import Label from "../../components/form/Label";
 import TextInput from "../../components/form/TextInput";
@@ -28,6 +28,7 @@ interface ResumeFormProps {
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   addPersonalInfo: (data: PersonalInfoFormDataValues) => Promise<void>;
   updatePersonalInfo: (data: PersonalInfoFormDataValues) => Promise<void>;
+  isSubmitting?: boolean;
 }
 
 const PersonalInfoForm = ({
@@ -37,6 +38,7 @@ const PersonalInfoForm = ({
   setIsEditing,
   addPersonalInfo,
   updatePersonalInfo,
+  isSubmitting = false,
 }: ResumeFormProps) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<PersonalInfoFormDataValues>({
@@ -266,7 +268,9 @@ const PersonalInfoForm = ({
               ? "bg-blue-600 hover:bg-blue-700"
               : "bg-emerald-600 hover:bg-emerald-700"
           } text-white rounded cursor-pointer px-5 py-1.5 flex items-center gap-x-2 mt-5`}
-          onClick={() => setIsEditing(true)}
+          onClick={() => {
+            if (!isSubmitting) setIsEditing(true);
+          }}
         >
           {id ? t("update") : t("add")}
           {id ? <Edit size={16} /> : <Plus size={16} />}
@@ -277,14 +281,24 @@ const PersonalInfoForm = ({
             type="button"
             className="bg-slate-800 rounded-s text-white cursor-pointer px-3.5 py-1.5 flex items-center gap-x-2 mt-5"
             onClick={() => setIsEditing(false)}
+            disabled={isSubmitting}
+            aria-disabled={isSubmitting}
           >
             <X size={16} />
             {t("cancel")}
           </button>
           <ActionButton
-            text={t("save")}
+            text={isSubmitting ? t("saving") : t("save")}
             theme="bg-teal-600"
-            icon={<Save size={16} />}
+            icon={
+              isSubmitting ? (
+                <Loader className="animate-spin" size={16} />
+              ) : (
+                <Save size={16} />
+              )
+            }
+            disabled={isSubmitting}
+            aria-busy={isSubmitting}
           />
         </div>
       )}
