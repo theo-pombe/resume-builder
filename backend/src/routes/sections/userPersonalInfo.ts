@@ -2,7 +2,10 @@ import { Router } from "express";
 import PersonalInfoController from "../../controllers/sections/personalInfo.js";
 import tryCatch from "../../utils/tryCatch.js";
 import validate from "../../middlewares/validate.js";
-import { addPersonalInfoSchema } from "../../schema/sections/personalInfo.js";
+import {
+  addPersonalInfoSchema,
+  editPersonalInfoSchema,
+} from "../../schema/sections/personalInfo.js";
 
 const userPersonalInfoRouter = Router({ mergeParams: true });
 
@@ -18,7 +21,7 @@ userPersonalInfoRouter
   )
   .patch(
     "/",
-    validate({ body: addPersonalInfoSchema }),
+    validate({ body: editPersonalInfoSchema }),
     tryCatch(new PersonalInfoController().editPersonalInfo, "editPersonalInfo")
   );
 
