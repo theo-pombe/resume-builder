@@ -120,8 +120,7 @@ class PersonalInfoController {
         .populate("resume", "_id title")
         .sort({ [sortField]: sortDirection })
         .skip((page - 1) * limit)
-        .limit(limit)
-        .lean(),
+        .limit(limit),
     ]);
 
     const totalPages = Math.max(Math.ceil(total / limit), 1);
