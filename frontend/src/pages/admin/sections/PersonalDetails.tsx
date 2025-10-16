@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import {
+  deletePersonById,
   editPersonById,
   getPersonById,
 } from "../../../services/sections/personalInfo";
@@ -130,6 +131,33 @@ const PersonalDetails = () => {
       console.error("❌ Failed to update personal info", error);
       logAlert(
         { success: false, message: "Failed to update personal info" },
+        setAlert
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+
+    if (!confirm(t("confirm_delete_personal_info"))) return;
+
+    setLoading(true);
+    try {
+      const { success, message } = await deletePersonById(id);
+
+      if (!success) {
+        logAlert({ success, message }, setAlert);
+        return;
+      }
+
+      logAlert({ success, message }, setAlert);
+      navigate("/admin/sections/personal-informations");
+    } catch (error) {
+      console.error("❌ Failed to delete personal info", error);
+      logAlert(
+        { success: false, message: "Failed to delete personal info" },
         setAlert
       );
     } finally {
@@ -358,6 +386,7 @@ const PersonalDetails = () => {
           </button>
           <button
             type="button"
+            onClick={handleDelete}
             disabled={loading}
             className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-md transition"
           >
