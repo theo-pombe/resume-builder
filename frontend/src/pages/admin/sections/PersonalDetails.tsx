@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
-import { getPersonById } from "../../../services/sections/personalInfo";
+import { useNavigate, useParams } from "react-router";
+import {
+  editPersonById,
+  getPersonById,
+} from "../../../services/sections/personalInfo";
 import type {
   Disability,
   PersonalInfoFormDataValues,
@@ -24,6 +27,7 @@ const disabilityOptions: Disability[] = [
 const PersonalDetails = () => {
   const { id } = useParams();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [personalInfo, setPersonalInfo] = useState<
     PersonalInfoType | undefined
   >();
@@ -107,6 +111,32 @@ const PersonalDetails = () => {
     }
   };
 
+  const handleUpdate = async (e: React.FormEvent) => {
+    if (!id) return;
+
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const { success, message } = await editPersonById(id, formData);
+
+      if (!success) {
+        logAlert({ success, message }, setAlert);
+        return;
+      }
+
+      logAlert({ success, message }, setAlert);
+      navigate("/admin/sections/personal-informations");
+    } catch (error) {
+      console.error("❌ Failed to update personal info", error);
+      logAlert(
+        { success: false, message: "Failed to update personal info" },
+        setAlert
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     handleFetch();
   }, [id]);
@@ -129,7 +159,10 @@ const PersonalDetails = () => {
         {alert && <Alert alert={alert} setAlert={setAlert} />}
       </div>
 
-      <form className="space-y-6 p-6 bg-white shadow-md rounded-lg">
+      <form
+        onSubmit={handleUpdate}
+        className="space-y-6 p-6 bg-white shadow-md rounded-lg"
+      >
         <div className="grid grid-cols-2 gap-5">
           <div>
             <label className="block text-sm text-gray-600 mb-1">Username</label>
