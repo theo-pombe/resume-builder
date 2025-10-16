@@ -13,6 +13,7 @@ import Experiences from "../pages/admin/sections/Experiences";
 import Projects from "../pages/admin/sections/Projects";
 import Academics from "../pages/admin/sections/Academics";
 import Schools from "../pages/admin/sections/Schools";
+import PersonalDetails from "../pages/admin/sections/PersonalDetails";
 
 const AdminRoutes = () => {
   return (
@@ -39,7 +40,11 @@ const AdminRoutes = () => {
       </Route>
 
       <Route path="sections">
-        <Route path="personal-informations" element={<PersonalInfos />} />
+        <Route path="personal-informations">
+          <Route index element={<PersonalInfos />} />
+          <Route path=":id" element={<PersonalDetails />} />
+        </Route>
+
         <Route path="school-qualifications" element={<Schools />} />
         <Route path="academic-qualifications" element={<Academics />} />
         <Route path="projects" element={<Projects />} />
