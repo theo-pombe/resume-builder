@@ -14,6 +14,10 @@ import Projects from "../pages/admin/sections/Projects";
 import Academics from "../pages/admin/sections/Academics";
 import Schools from "../pages/admin/sections/Schools";
 import PersonalDetails from "../pages/admin/sections/PersonalDetails";
+import FAQs from "../pages/admin/systems/FAQs";
+import FAQDetails from "../pages/admin/systems/FAQDetails";
+import Messages from "../pages/admin/systems/Messages";
+import MessageDetails from "../pages/admin/systems/MessageDetails";
 
 const AdminRoutes = () => {
   return (
@@ -51,6 +55,18 @@ const AdminRoutes = () => {
         <Route path="work-experiences" element={<Experiences />} />
         <Route path="skills" element={<Skills />} />
         <Route path="referees" element={<Referees />} />
+      </Route>
+
+      <Route path="system">
+        <Route path="faqs">
+          <Route index element={<FAQs />} />
+          <Route path=":id" element={<FAQDetails />} />
+        </Route>
+
+        <Route path="messages">
+          <Route index element={<Messages />} />
+          <Route path=":id" element={<MessageDetails />} />
+        </Route>
       </Route>
     </Route>
   );

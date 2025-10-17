@@ -2,6 +2,7 @@ import { FileText, LayoutDashboard, PanelTop, Users } from "lucide-react";
 import Logo from "../../components/ui/Logo";
 import { NavLink } from "react-router";
 import ResumeSectionsMenu from "../../components/admin/ResumeSectionsMenu";
+import SystemMenu from "../../components/admin/SystemMenu";
 
 const AdminSidebar = () => {
   return (
@@ -58,7 +59,8 @@ const AdminSidebar = () => {
           <Users size={18} />
           Users
         </NavLink>
-        {/* SystemMenu */}
+
+        <SystemMenu />
       </nav>
     </aside>
   );
