@@ -8,6 +8,7 @@ import upload from "../../utils/upload.js";
 import tryCatch from "../../utils/tryCatch.js";
 import SchoolQualificationsController from "../../controllers/sections/schoolQualifications.js";
 import validate from "../../middlewares/validate.js";
+import { normalizeSchoolBody } from "../../middlewares/nomalize.js";
 
 const schoolQualificationsRouter = Router({ mergeParams: true });
 const adminSchoolQualificationsRouter = Router();
@@ -16,6 +17,7 @@ schoolQualificationsRouter
   .post(
     "/",
     upload.single("certificate"),
+    normalizeSchoolBody,
     validate({
       body: addSchoolQualificationBodySchema,
       params: paramsWithIDsSchema,
@@ -36,6 +38,7 @@ schoolQualificationsRouter
   .patch(
     "/:id",
     upload.single("certificate"),
+    normalizeSchoolBody,
     validate({
       body: updateSchoolQualificationBodySchema,
       params: paramsWithIDsSchema,
@@ -73,6 +76,7 @@ adminSchoolQualificationsRouter
   .patch(
     "/:id",
     upload.single("certificate"),
+    normalizeSchoolBody,
     validate({
       body: updateSchoolQualificationBodySchema,
       params: paramsWithIDsSchema,

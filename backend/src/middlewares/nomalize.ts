@@ -63,3 +63,36 @@ export const normalizeResumeBody = (
 
   next();
 };
+
+export const normalizeSchoolBody = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.body.school && typeof req.body.school === "string") {
+    try {
+      req.body.school = JSON.parse(req.body.school);
+    } catch (err) {
+      return res.status(400).json({ error: "Invalid school format" });
+    }
+  }
+
+  // Parse grade if it’s a JSON string
+  if (req.body.grade && typeof req.body.grade === "string") {
+    try {
+      req.body.grade = JSON.parse(req.body.grade);
+    } catch (err) {
+      return res.status(400).json({ error: "Invalid grade format" });
+    }
+  }
+
+  // convert years from string → number
+  if (req.body.startYear) {
+    req.body.startYear = Number(req.body.startYear);
+  }
+  if (req.body.endYear) {
+    req.body.endYear = Number(req.body.endYear);
+  }
+
+  next();
+};
