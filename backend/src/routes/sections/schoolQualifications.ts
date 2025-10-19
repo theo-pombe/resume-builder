@@ -8,7 +8,9 @@ import upload from "../../utils/upload.js";
 import tryCatch from "../../utils/tryCatch.js";
 import SchoolQualificationsController from "../../controllers/sections/schoolQualifications.js";
 import validate from "../../middlewares/validate.js";
+
 const schoolQualificationsRouter = Router({ mergeParams: true });
+const adminSchoolQualificationsRouter = Router();
 
 schoolQualificationsRouter
   .post(
@@ -52,4 +54,41 @@ schoolQualificationsRouter
     )
   );
 
-export { schoolQualificationsRouter };
+adminSchoolQualificationsRouter
+  .get(
+    "/",
+    tryCatch(
+      new SchoolQualificationsController().getAllSchools,
+      "getSchoolQualifications"
+    )
+  )
+  .get(
+    "/:id",
+    validate({ params: paramsWithIDsSchema }),
+    tryCatch(
+      new SchoolQualificationsController().getSchoolById,
+      "getSchoolQualification"
+    )
+  )
+  .patch(
+    "/:id",
+    upload.single("certificate"),
+    validate({
+      body: updateSchoolQualificationBodySchema,
+      params: paramsWithIDsSchema,
+    }),
+    tryCatch(
+      new SchoolQualificationsController().updateSchoolById,
+      "updateSchoolQualification"
+    )
+  )
+  .delete(
+    "/:id",
+    validate({ params: paramsWithIDsSchema }),
+    tryCatch(
+      new SchoolQualificationsController().deleteSchoolById,
+      "deleteSchoolQualification"
+    )
+  );
+
+export { schoolQualificationsRouter, adminSchoolQualificationsRouter };
