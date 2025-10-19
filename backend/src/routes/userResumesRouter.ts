@@ -9,6 +9,7 @@ import {
 } from "../schema/resumeValidation.js";
 import { normalizeResumeBody } from "../middlewares/nomalize.js";
 import userPersonalInfoRouter from "./sections/userPersonalInfo.js";
+import { paramsWithIDsSchema } from "../schema/index.validate.js";
 
 const userResumesRouter = Router();
 
@@ -21,16 +22,21 @@ userResumesRouter
     tryCatch(new ResumesController().createResume, "createResume")
   )
   .get("/", tryCatch(new ResumesController().getUserResumes, "getUserResumes"))
-  .get("/:id", tryCatch(new ResumesController().getResume, "getResume"))
+  .get(
+    "/:id",
+    validate({ params: paramsWithIDsSchema }),
+    tryCatch(new ResumesController().getResume, "getResume")
+  )
   .patch(
     "/:id",
     upload.single("avatar"),
     normalizeResumeBody,
-    validate({ body: updateResumeBodySchema }),
+    validate({ params: paramsWithIDsSchema, body: updateResumeBodySchema }),
     tryCatch(new ResumesController().updateResume, "updateResume")
   )
   .delete(
     "/:id",
+    validate({ params: paramsWithIDsSchema }),
     tryCatch(new ResumesController().deleteResume, "deleteResume")
   );
 

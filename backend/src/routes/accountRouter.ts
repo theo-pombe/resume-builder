@@ -4,6 +4,7 @@ import AccountController from "../controllers/accountController.js";
 import validate from "../middlewares/validate.js";
 import { updateAccountBodySchema } from "../schema/accountValidation.js";
 import upload from "../utils/upload.js";
+import { paramsWithIDsSchema } from "../schema/index.validate.js";
 
 const accountRouter = Router();
 
@@ -12,7 +13,7 @@ accountRouter
   .patch(
     "/:username",
     upload.single("newAvatar"),
-    validate({ body: updateAccountBodySchema }),
+    validate({ params: paramsWithIDsSchema, body: updateAccountBodySchema }),
     tryCatch(new AccountController().updateAccount, "updateAccount")
   );
 
