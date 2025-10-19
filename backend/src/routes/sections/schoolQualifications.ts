@@ -1,0 +1,55 @@
+import { Router } from "express";
+import {
+  addSchoolQualificationBodySchema,
+  updateSchoolQualificationBodySchema,
+} from "../../schema/sections/schoolQ.js";
+import { paramsWithIDsSchema } from "../../schema/index.validate.js";
+import upload from "../../utils/upload.js";
+import tryCatch from "../../utils/tryCatch.js";
+import SchoolQualificationsController from "../../controllers/sections/schoolQualifications.js";
+import validate from "../../middlewares/validate.js";
+const schoolQualificationsRouter = Router({ mergeParams: true });
+
+schoolQualificationsRouter
+  .post(
+    "/",
+    upload.single("certificate"),
+    validate({
+      body: addSchoolQualificationBodySchema,
+      params: paramsWithIDsSchema,
+    }),
+    tryCatch(
+      new SchoolQualificationsController().addSchool,
+      "addSchoolQualifications"
+    )
+  )
+  .get(
+    "/",
+    validate({ params: paramsWithIDsSchema }),
+    tryCatch(
+      new SchoolQualificationsController().getSchools,
+      "getSchoolQualifications"
+    )
+  )
+  .patch(
+    "/:id",
+    upload.single("certificate"),
+    validate({
+      body: updateSchoolQualificationBodySchema,
+      params: paramsWithIDsSchema,
+    }),
+    tryCatch(
+      new SchoolQualificationsController().updateSchool,
+      "updateSchoolQualification"
+    )
+  )
+  .delete(
+    "/:id",
+    validate({ params: paramsWithIDsSchema }),
+    tryCatch(
+      new SchoolQualificationsController().deleteSchool,
+      "deleteSchoolQualification"
+    )
+  );
+
+export { schoolQualificationsRouter };

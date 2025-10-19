@@ -10,6 +10,7 @@ import {
 import { normalizeResumeBody } from "../middlewares/nomalize.js";
 import userPersonalInfoRouter from "./sections/userPersonalInfo.js";
 import { paramsWithIDsSchema } from "../schema/index.validate.js";
+import { schoolQualificationsRouter } from "./sections/schoolQualifications.js";
 
 const userResumesRouter = Router();
 
@@ -40,9 +41,8 @@ userResumesRouter
     tryCatch(new ResumesController().deleteResume, "deleteResume")
   );
 
-userResumesRouter.use(
-  "/:resumeId/personal-information",
-  userPersonalInfoRouter
-);
+userResumesRouter
+  .use("/:resumeId/personal-information", userPersonalInfoRouter)
+  .use("/:resumeId/school-qualifications", schoolQualificationsRouter);
 
 export default userResumesRouter;
