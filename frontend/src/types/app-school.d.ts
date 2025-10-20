@@ -16,8 +16,8 @@ declare module "app-school" {
   }
 
   export interface SchoolGrade {
-    division?: GradeDivision;
-    points?: string;
+    division?: GradeDivision | null;
+    points?: number | null;
   }
 
   export interface SchoolType {
@@ -26,24 +26,29 @@ declare module "app-school" {
     level: SchoolLevel;
     award: SchoolAward;
     school: SchoolInfo;
-    startYear: Date;
-    endYear: Date;
-    grade: SchoolGrade;
-    certificate?: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    startYear: number;
+    endYear: number;
+    grade?: SchoolGrade | null;
+    certificate?: string | null;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string | null;
+    deletedBy?: string | null;
   }
 
   export interface SchoolFormDataValues {
     level: SchoolLevel | "";
     award: SchoolAward | "";
-    school: SchoolInfo;
-    startYear: string | Date;
-    endYear: string | Date;
-    grade: {
-      division?: GradeDivision | "";
-      points?: string;
+    school: {
+      name: string;
+      location: string;
     };
-    certificate?: string | File;
+    startYear: string | number;
+    endYear: string | number;
+    grade: {
+      division?: GradeDivision | "" | null;
+      points?: string | number | null;
+    } | null;
+    certificate?: File | string | null;
   }
 }
