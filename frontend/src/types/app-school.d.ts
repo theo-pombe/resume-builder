@@ -51,4 +51,21 @@ declare module "app-school" {
     } | null;
     certificate?: File | string | null;
   }
+
+  export interface SchoolApiPayload {
+    level: SchoolLevel;
+    award: SchoolAward;
+    school: SchoolInfo;
+    startYear: number;
+    endYear: number;
+    grade?: {
+      division?: GradeDivision | null;
+      points?: number | null;
+    } | null;
+    certificate?: string | null;
+  }
+
+  export function normalizeSchoolFormToApi(
+    form: SchoolFormDataValues
+  ): SchoolApiPayload;
 }
