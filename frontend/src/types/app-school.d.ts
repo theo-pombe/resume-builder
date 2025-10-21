@@ -16,8 +16,8 @@ declare module "app-school" {
   }
 
   export interface SchoolGrade {
-    division?: GradeDivision | null;
-    points?: number | null;
+    division: GradeDivision;
+    points: number;
   }
 
   export interface SchoolType {
@@ -28,12 +28,12 @@ declare module "app-school" {
     school: SchoolInfo;
     startYear: number;
     endYear: number;
-    grade?: SchoolGrade | null;
-    certificate?: string | null;
+    grade?: SchoolGrade;
+    certificate?: string;
     createdAt?: string;
     updatedAt?: string;
-    deletedAt?: string | null;
-    deletedBy?: string | null;
+    deletedAt?: string;
+    deletedBy?: string;
   }
 
   export interface SchoolFormDataValues {
@@ -45,11 +45,11 @@ declare module "app-school" {
     };
     startYear: string | number;
     endYear: string | number;
-    grade: {
-      division?: GradeDivision | "" | null;
-      points?: string | number | null;
-    } | null;
-    certificate?: File | string | null;
+    grade?: {
+      division: GradeDivision | "";
+      points: string | number;
+    };
+    certificate?: File | string;
   }
 
   export interface SchoolApiPayload {
@@ -59,10 +59,10 @@ declare module "app-school" {
     startYear: number;
     endYear: number;
     grade?: {
-      division?: GradeDivision | null;
-      points?: number | null;
-    } | null;
-    certificate?: string | null;
+      division?: GradeDivision;
+      points?: number;
+    };
+    certificate?: string;
   }
 
   export function normalizeSchoolFormToApi(
