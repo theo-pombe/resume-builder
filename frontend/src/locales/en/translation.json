@@ -154,6 +154,16 @@
 
   "login_to_your_account": "Login to your account",
   "already_have_account": "Already have an account?",
+
+  "confirm_delete_school": "Are you sure you want to delete {{award}} at {{school}}?",
+  "no_certificate": "No certificate",
+  "no_school_qualifications_added": "No school qualifications have been added yet",
+  "delete": "Delete",
+  "failed_to_fetch_school_qualification": "Failed to fetch school qualification",
+  "failed_to_add_school_qualification": "Failed to add school qualification",
+  "failed_to_edit_school_qualification": "Failed to edit school qualification",
+  "failed_to_remove_school_qualification": "Failed to remove school qualification",
+
   "register": "Register",
 
   "choose_nationality": "Choose nationality",

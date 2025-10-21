@@ -14,6 +14,15 @@
 
   "confirm_delete_personal_info": "Je, una uhakika unataka kufuta taarifa zako binafsi?",
 
+  "confirm_delete_school": "Je, una uhakika unataka kufuta {{award}} katika {{school}}?",
+  "no_certificate": "Hakuna cheti",
+  "no_school_qualifications_added": "Hakuna sifa za shule ambazo zimeongezwa bado",
+  "delete": "Futa",
+  "failed_to_fetch_school_qualification": "Imeshindikana kupata sifa ya shule",
+  "failed_to_add_school_qualification": "Imeshindikana kuongeza sifa ya shule",
+  "failed_to_edit_school_qualification": "Imeshindikana kuhariri sifa ya shule",
+  "failed_to_remove_school_qualification": "Imeshindikana kuondoa sifa ya shule",
+
   "logo": "WasifuX",
   "title": "Kijitabu cha Wasifu",
   "download_resume": "Pakua Wasifu",
